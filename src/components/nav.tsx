@@ -73,9 +73,11 @@ const Nav = () => {
     <div 
       className={clsx(
         "fixed w-full z-50 transition-all duration-300 ",
-        scrolled 
-          ? "bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-md py-2" 
-          : "bg-transparent py-4",
+        isOpen
+          ? "bg-white dark:bg-gray-900 shadow-md py-2"
+          : scrolled
+            ? "bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-md py-2"
+            : "bg-transparent py-4",
         // Hide navbar when scrolling down (after 150px) and not at the top, show when scrolling up
         !isOpen && scrollDirection === 'down' && scrolled && lastScrollY > 150 
           ? "-top-20" 
