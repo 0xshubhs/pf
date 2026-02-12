@@ -17,7 +17,6 @@ interface GitHubRepo {
   pushed_at: string
   stargazers_count: number
   language: string | null
-  languages_url: string
 }
 
 interface ProjectData {
@@ -30,7 +29,6 @@ interface ProjectData {
   stars: number
   isFeatured: boolean
   language: string | null
-  languages: Record<string, number>
 }
 
 // Section heading component (reused from About page)
@@ -90,24 +88,11 @@ const ProjectCard = ({ project, index }: { project: ProjectData; index: number }
         
         {project.language && (
           <div className="mb-4 flex flex-wrap gap-2 dark:text-white">
-            <span 
+            <span
               className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-800 rounded-full font-medium"
             >
               {project.language}
             </span>
-            {Object.keys(project.languages).filter(lang => lang !== project.language).slice(0, 3).map((lang) => (
-              <span 
-                key={lang} 
-                className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-800 rounded-full"
-              >
-                {lang}
-              </span>
-            ))}
-            {Object.keys(project.languages).length > 4 && (
-              <span className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-800 rounded-full">
-                +{Object.keys(project.languages).length - 4} more
-              </span>
-            )}
           </div>
         )}
 
@@ -173,50 +158,30 @@ export default function Projects() {
           direction: 'desc',
         })
 
-        // Get language data for each repo
-        const reposWithLanguages = await Promise.all(
-          repos
-            .filter((repo) => !repo.topics?.includes('ignore'))
-            .map(async (repo) => {
-              // Get all languages used in the repo
-              let languages = {};
-              try {
-                const { data: languagesData } = await octokit.request(`GET ${repo.languages_url.replace('https://api.github.com', '')}`)
-                languages = languagesData;
-              } catch (err) {
-                console.error(`Failed to fetch languages for ${repo.name}:`, err);
-              }
+        const projectsList = repos
+          .filter((repo) => !repo.topics?.includes('ignore'))
+          .map((repo) => ({
+            name: repo.name,
+            description: repo.description || '',
+            repoUrl: repo.html_url,
+            liveLink: repo.homepage || repo.html_url,
+            topics: repo.topics || [],
+            lastUpdated: repo.pushed_at,
+            stars: repo.stargazers_count,
+            isFeatured: repo.topics?.includes('featured') || false,
+            language: repo.language,
+          }));
 
-              return {
-                name: repo.name,
-                description: repo.description || '',
-                repoUrl: repo.html_url,
-                liveLink: repo.homepage || repo.html_url,
-                topics: repo.topics || [],
-                lastUpdated: repo.pushed_at,
-                stars: repo.stargazers_count,
-                isFeatured: repo.topics?.includes('featured') || false,
-                language: repo.language,
-                languages: languages
-              };
-            })
-        );
-
-        // Collect all unique languages
         const allLanguages = new Set<string>();
-        reposWithLanguages.forEach(project => {
+        projectsList.forEach(project => {
           if (project.language) {
             allLanguages.add(project.language);
           }
-          // Also add languages from the detailed languages object
-          Object.keys(project.languages).forEach(lang => {
-            allLanguages.add(lang);
-          });
         });
-        
+
         setAvailableTopics(Array.from(allLanguages));
-        setProjects(reposWithLanguages);
-        setFilteredProjects(reposWithLanguages);
+        setProjects(projectsList);
+        setFilteredProjects(projectsList);
       } catch (err) {
         setError(
           err instanceof Error ? err.message : 'Failed to fetch projects',
@@ -252,10 +217,7 @@ export default function Projects() {
       setFilteredProjects(projects.filter(project => project.isFeatured))
     } else {
       setFilteredProjects(
-        projects.filter(project => 
-          project.language === activeFilter || 
-          Object.keys(project.languages).includes(activeFilter)
-        )
+        projects.filter(project => project.language === activeFilter)
       )
     }
   }, [activeFilter, projects]);;
@@ -321,8 +283,7 @@ export default function Projects() {
         <div className="h-1 w-20 bg-orange-500 rounded-full mt-2 mb-8" />
         
         <p className="text-gray-600 dark:text-gray-400 max-w-2xl mb-8">
-          A collection of my work, automatically pulled from my GitHub repositories.
-          Filter by programming language or check out my featured projects.
+          things i&apos;ve built — some still standing.
         </p>
 
         {/* Filter buttons */}

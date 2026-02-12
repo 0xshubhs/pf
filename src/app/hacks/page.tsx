@@ -331,7 +331,7 @@ export default function Hacks() {
   }, [activeFilter]);
 
   const introText =
-    'My journey into both web2 and web3 has been deeply shaped by hackathons. Just a few months after diving into web3, I started challenging myself with projects that pushed my limits. As a competitive person, I discovered a passion for participating — and winning — in these competitions. Whether its web2 or web3, the thrill of innovating ideas and bringing them to life is something I can not get enough of. It can be an addictive experience XD.'
+    '48 hours, one idea, no sleep — that\u0027s where the best stuff gets built.'
 
   return (
     <div className="min-h-screen bg-bg">

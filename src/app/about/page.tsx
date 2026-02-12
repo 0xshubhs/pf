@@ -117,11 +117,8 @@ export default function About() {
     'Beyond the code, I breathe music, clear my mind through meditation, ' +
     'and push limits at the gym.'
 
-  // Split intro text into paragraphs for better visual rhythm
   const introParagraphs = [
-    'A quiet Saturday evening, lofi beats playing softly, rain tapping against the window, and a warm cup of coffee by my side. The cursor blinks, and I type console.log("Namaste Dunia").',
-    'This is my flow state — building decentralized solutions, solving puzzles, and bringing ideas to life. Two years deep in Web3, crafting smart contracts and dApps.',
-    'Beyond the code, I breathe music, clear my mind through meditation, and push limits at the gym.'
+    'building on-chain, breaking things for fun, and shipping what matters.'
   ]
 
   return (
