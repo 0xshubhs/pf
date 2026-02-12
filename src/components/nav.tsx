@@ -53,6 +53,18 @@ const Nav = () => {
     }
   }, [lastScrollY])
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isOpen])
+
   const toggleMenu = () => {
     setIsOpen(!isOpen)
   }
@@ -74,7 +86,7 @@ const Nav = () => {
         {/* Overlay for mobile menu */}
         {isOpen && (
           <div
-            className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
+            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
             onClick={toggleMenu}
           />
         )}
