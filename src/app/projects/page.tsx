@@ -1,23 +1,13 @@
 'use client'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { Octokit } from '@octokit/core'
 import { motion } from 'framer-motion'
+
+const BATCH_SIZE = 10
 
 const octokit = new Octokit({
   auth: process.env.NEXT_PUBLIC_GITHUB_TOKEN,
 })
-
-interface GitHubRepo {
-  id: number
-  name: string
-  description: string | null
-  html_url: string
-  homepage: string | null
-  topics?: string[]
-  pushed_at: string
-  stargazers_count: number
-  language: string | null
-}
 
 interface ProjectData {
   name: string
@@ -33,7 +23,7 @@ interface ProjectData {
 
 // Section heading component (reused from About page)
 const SectionHeading = ({ title }: { title: string }) => (
-  <motion.h2 
+  <motion.h2
     initial={{ opacity: 0, y: 10 }}
     whileInView={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5 }}
@@ -41,7 +31,7 @@ const SectionHeading = ({ title }: { title: string }) => (
     className="text-2xl md:text-3xl font-bold mb-6 relative inline-block"
   >
     <span>{title}</span>
-    <motion.span 
+    <motion.span
       initial={{ width: 0 }}
       whileInView={{ width: "100%" }}
       transition={{ duration: 0.8, delay: 0.3 }}
@@ -57,7 +47,7 @@ const ProjectCard = ({ project, index }: { project: ProjectData; index: number }
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
+      transition={{ duration: 0.5, delay: (index % BATCH_SIZE) * 0.05 }}
       viewport={{ once: true, margin: "-50px" }}
       className={`h-full rounded-base border-2 border-border bg-main p-4 shadow-light dark:border-darkBorder dark:shadow-dark sm:p-5 ${
         project.isFeatured ? 'ring-2 ring-orange-400 ring-offset-2 ring-offset-white dark:ring-offset-secondaryBlack' : ''
@@ -70,11 +60,11 @@ const ProjectCard = ({ project, index }: { project: ProjectData; index: number }
           </h2>
           {project.stars > 0 && (
             <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                className="h-4 w-4 mr-1" 
-                fill="none" 
-                viewBox="0 0 24 24" 
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
                 stroke="currentColor"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
@@ -85,7 +75,7 @@ const ProjectCard = ({ project, index }: { project: ProjectData; index: number }
         </div>
 
         <p className="mb-2 mt-2 flex-grow">{project.description}</p>
-        
+
         {project.language && (
           <div className="mb-4 flex flex-wrap gap-2 dark:text-white">
             <span
@@ -100,13 +90,13 @@ const ProjectCard = ({ project, index }: { project: ProjectData; index: number }
           <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
             Last updated: {project.lastUpdated ? new Date(project.lastUpdated).toLocaleDateString() : 'Unknown date'}
           </p>
-          
+
           <div className="grid grid-cols-2 gap-5">
             <motion.a
-              whileHover={{ 
-                translateX: 3, 
+              whileHover={{
+                translateX: 3,
                 translateY: -3,
-                boxShadow: "0px 0px 0px rgba(0,0,0,0)" 
+                boxShadow: "0px 0px 0px rgba(0,0,0,0)"
               }}
               className="cursor-pointer rounded-base border-2 border-border bg-white px-4 py-2 text-center text-sm font-base shadow-light transition-all dark:border-darkBorder dark:bg-secondaryBlack dark:text-darkText dark:shadow-dark sm:text-base"
               href={project.liveLink}
@@ -116,10 +106,10 @@ const ProjectCard = ({ project, index }: { project: ProjectData; index: number }
               Visit
             </motion.a>
             <motion.a
-              whileHover={{ 
-                translateX: 3, 
+              whileHover={{
+                translateX: 3,
                 translateY: -3,
-                boxShadow: "0px 0px 0px rgba(0,0,0,0)" 
+                boxShadow: "0px 0px 0px rgba(0,0,0,0)"
               }}
               className="cursor-pointer rounded-base border-2 border-border bg-white px-4 py-2 text-center text-sm font-base shadow-light transition-all dark:border-darkBorder dark:bg-secondaryBlack dark:text-darkText dark:shadow-dark sm:text-base"
               href={project.repoUrl}
@@ -137,90 +127,136 @@ const ProjectCard = ({ project, index }: { project: ProjectData; index: number }
 
 export default function Projects() {
   const [projects, setProjects] = useState<ProjectData[]>([])
-  const [filteredProjects, setFilteredProjects] = useState<ProjectData[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [activeFilter, setActiveFilter] = useState<string>('all')
   const [availableTopics, setAvailableTopics] = useState<string[]>([])
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [page, setPage] = useState(1)
+  const [hasMore, setHasMore] = useState(true)
   const dropdownRef = useRef<HTMLDivElement>(null)
-  const projectsRef = useRef<HTMLDivElement>(null)
+  const loaderRef = useRef<HTMLDivElement>(null)
 
+  const mapRepo = (repo: any): ProjectData => ({
+    name: repo.name,
+    description: repo.description || '',
+    repoUrl: repo.html_url,
+    liveLink: repo.homepage || repo.html_url,
+    topics: repo.topics || [],
+    lastUpdated: repo.pushed_at,
+    stars: repo.stargazers_count,
+    isFeatured: repo.topics?.includes('featured') || false,
+    language: repo.language,
+  })
+
+  // Fetch a single page of repos
+  const fetchPage = useCallback(async (pageNum: number) => {
+    const { data: repos } = await octokit.request('GET /user/repos', {
+      per_page: BATCH_SIZE,
+      page: pageNum,
+      affiliation: 'owner',
+      sort: 'updated',
+      direction: 'desc',
+    })
+
+    const batch = repos
+      .filter((repo: any) => !repo.topics?.includes('ignore'))
+      .map(mapRepo)
+
+    // If we got fewer than BATCH_SIZE, there are no more pages
+    if (repos.length < BATCH_SIZE) {
+      setHasMore(false)
+    }
+
+    return batch
+  }, [])
+
+  // Initial load — first batch
   useEffect(() => {
-    const fetchProjects = async () => {
+    const init = async () => {
       try {
         setIsLoading(true)
+        const batch = await fetchPage(1)
+        setProjects(batch)
 
-        const { data: repos } = await octokit.request('GET /user/repos', {
-          per_page: 400,
-          affiliation: 'owner',
-          sort: 'updated',
-          direction: 'desc',
-        })
-
-        const projectsList = repos
-          .filter((repo) => !repo.topics?.includes('ignore'))
-          .map((repo) => ({
-            name: repo.name,
-            description: repo.description || '',
-            repoUrl: repo.html_url,
-            liveLink: repo.homepage || repo.html_url,
-            topics: repo.topics || [],
-            lastUpdated: repo.pushed_at,
-            stars: repo.stargazers_count,
-            isFeatured: repo.topics?.includes('featured') || false,
-            language: repo.language,
-          }));
-
-        const allLanguages = new Set<string>();
-        projectsList.forEach(project => {
-          if (project.language) {
-            allLanguages.add(project.language);
-          }
-        });
-
-        setAvailableTopics(Array.from(allLanguages));
-        setProjects(projectsList);
-        setFilteredProjects(projectsList);
+        // Collect languages from first batch
+        const langs = new Set<string>()
+        batch.forEach((p: ProjectData) => { if (p.language) langs.add(p.language) })
+        setAvailableTopics(Array.from(langs))
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : 'Failed to fetch projects',
-        )
+        setError(err instanceof Error ? err.message : 'Failed to fetch projects')
       } finally {
         setIsLoading(false)
       }
     }
+    init()
+  }, [fetchPage])
 
-    fetchProjects()
-  }, [])
+  // Load more when scrolled to bottom (IntersectionObserver on sentinel)
+  useEffect(() => {
+    if (!loaderRef.current || !hasMore || isLoading) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !isLoadingMore) {
+          setPage((prev) => prev + 1)
+        }
+      },
+      { rootMargin: '300px' }
+    )
+
+    observer.observe(loaderRef.current)
+    return () => observer.disconnect()
+  }, [hasMore, isLoading, isLoadingMore])
+
+  // Fetch next page when page number changes
+  useEffect(() => {
+    if (page === 1) return // already loaded in init
+
+    const loadMore = async () => {
+      try {
+        setIsLoadingMore(true)
+        const batch = await fetchPage(page)
+        setProjects((prev) => [...prev, ...batch])
+
+        // Merge new languages into available topics
+        const newLangs = new Set<string>()
+        batch.forEach((p: ProjectData) => { if (p.language) newLangs.add(p.language) })
+        setAvailableTopics((prev) => {
+          const merged = new Set(prev)
+          newLangs.forEach((l) => merged.add(l))
+          return Array.from(merged)
+        })
+      } catch (err) {
+        console.error('Failed to load more projects:', err)
+      } finally {
+        setIsLoadingMore(false)
+      }
+    }
+    loadMore()
+  }, [page, fetchPage])
 
   // Handle outside clicks for dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (isDropdownOpen && 
-          dropdownRef.current && 
+      if (isDropdownOpen &&
+          dropdownRef.current &&
           !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
       }
     };
-    
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isDropdownOpen]);
-  
-  
-    // Filter projects when active filter changes
-  useEffect(() => {
-    if (activeFilter === 'all') {
-      setFilteredProjects(projects)
-    } else if (activeFilter === 'featured') {
-      setFilteredProjects(projects.filter(project => project.isFeatured))
-    } else {
-      setFilteredProjects(
-        projects.filter(project => project.language === activeFilter)
-      )
-    }
-  }, [activeFilter, projects]);;
+
+  // Filter projects client-side from what we've loaded so far
+  const filteredProjects = activeFilter === 'all'
+    ? projects
+    : activeFilter === 'featured'
+      ? projects.filter(p => p.isFeatured)
+      : projects.filter(p => p.language === activeFilter)
 
   if (error) {
     return (
@@ -236,7 +272,7 @@ export default function Projects() {
       </motion.div>
     )
   }
-  
+
   if (isLoading) {
     return (
       <div className="mx-auto max-w-4xl px-6 pt-28 pb-10 min-h-[400px]">
@@ -271,7 +307,7 @@ export default function Projects() {
   const regularProjects = filteredProjects.filter(project => !project.isFeatured)
 
   return (
-    <div ref={projectsRef} className="mx-auto max-w-4xl px-6 pt-28 pb-10">
+    <div className="mx-auto max-w-4xl px-6 pt-28 pb-10">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -281,7 +317,7 @@ export default function Projects() {
           Projects
         </h1>
         <div className="h-1 w-20 bg-orange-500 rounded-full mt-2 mb-8" />
-        
+
         <p className="text-gray-600 dark:text-gray-400 max-w-2xl mb-8">
           things i&apos;ve built — some still standing.
         </p>
@@ -323,7 +359,7 @@ export default function Projects() {
           ))}
           {availableTopics.length > 6 && (
             <div className="relative" ref={dropdownRef}>
-              <button 
+              <button
                 className="px-3 py-1 rounded-full text-sm bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
@@ -366,8 +402,8 @@ export default function Projects() {
           {activeFilter !== 'featured' && regularProjects.length > 0 && (
             <SectionHeading title={featuredProjects.length > 0 ? "More Projects" : "All Projects"} />
           )}
-          
-          {filteredProjects.length === 0 ? (
+
+          {filteredProjects.length === 0 && !hasMore ? (
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -381,6 +417,18 @@ export default function Projects() {
                 <ProjectCard key={project.name} project={project} index={index} />
               ))}
             </div>
+          )}
+        </div>
+
+        {/* Infinite scroll sentinel */}
+        <div ref={loaderRef} className="py-4">
+          {isLoadingMore && (
+            <div className="flex justify-center">
+              <div className="h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-orange-500" />
+            </div>
+          )}
+          {!hasMore && projects.length > 0 && (
+            <p className="text-center text-sm text-gray-400">that&apos;s all of them.</p>
           )}
         </div>
       </motion.div>
