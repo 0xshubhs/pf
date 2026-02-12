@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Link } from 'next-view-transitions'
+import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
 import clsx from 'clsx'
@@ -84,7 +84,7 @@ const Nav = () => {
           <Link
             href="/"
             className={clsx(
-              "text-xl font-bold transition-all duration-300 font-bold",
+              "text-xl font-bold transition-all duration-300",
               scrolled 
                 ? "text-gray-900 hover:text-orange-500 dark:text-white dark:hover:text-orange-400 scale-95" 
                 : "text-gray-900 dark:text-white hover:text-orange-400 dark:hover:text-orange-400 scale-100"

@@ -112,7 +112,7 @@ const ProjectCard = ({ project, index }: { project: ProjectData; index: number }
         )}
 
         <div className="mt-auto">
-          <p className="text-xs text-gray-700 dark:text-gray-900 mb-4">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
             Last updated: {project.lastUpdated ? new Date(project.lastUpdated).toLocaleDateString() : 'Unknown date'}
           </p>
           
@@ -262,22 +262,24 @@ export default function Projects() {
 
   if (error) {
     return (
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="my-4 rounded-base border-2 border-red-500 bg-red-50 p-4 text-red-700"
+        className="mx-auto max-w-4xl px-6 pt-28 pb-10"
       >
-        {error}
+        <div className="rounded-xl border border-red-300 bg-red-50 dark:bg-red-500/10 dark:border-red-500/30 p-4 text-red-700 dark:text-red-400">
+          {error}
+        </div>
       </motion.div>
     )
   }
   
   if (isLoading) {
     return (
-      <div className="min-h-[400px]">
+      <div className="mx-auto max-w-4xl px-6 pt-28 pb-10 min-h-[400px]">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-b-2 border-gray-500" />
+          <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-orange-500" />
           <p className="text-gray-600 dark:text-gray-400">
             Fetching projects from GitHub...
           </p>
@@ -286,14 +288,14 @@ export default function Projects() {
           {[...Array(4)].map((_, i) => (
             <div
               key={i}
-              className="animate-pulse rounded-base border-2 border-border bg-main/50 p-4 shadow-light dark:border-darkBorder dark:shadow-dark sm:p-5"
+              className="animate-pulse rounded-xl border border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/30 p-5"
             >
-              <div className="mb-4 h-7 w-3/4 rounded-base bg-gray-300 dark:bg-gray-700"></div>
-              <div className="mb-2 h-4 w-full rounded-base bg-gray-200 dark:bg-gray-800"></div>
-              <div className="mb-8 h-4 w-5/6 rounded-base bg-gray-200 dark:bg-gray-800"></div>
+              <div className="mb-4 h-7 w-3/4 rounded-lg bg-gray-200 dark:bg-gray-700"></div>
+              <div className="mb-2 h-4 w-full rounded-lg bg-gray-100 dark:bg-gray-800"></div>
+              <div className="mb-8 h-4 w-5/6 rounded-lg bg-gray-100 dark:bg-gray-800"></div>
               <div className="grid grid-cols-2 gap-5">
-                <div className="h-9 rounded-base bg-gray-300 dark:bg-gray-700"></div>
-                <div className="h-9 rounded-base bg-gray-300 dark:bg-gray-700"></div>
+                <div className="h-9 rounded-lg bg-gray-200 dark:bg-gray-700"></div>
+                <div className="h-9 rounded-lg bg-gray-200 dark:bg-gray-700"></div>
               </div>
             </div>
           ))}
@@ -307,7 +309,7 @@ export default function Projects() {
   const regularProjects = filteredProjects.filter(project => !project.isFeatured)
 
   return (
-    <div ref={projectsRef}>
+    <div ref={projectsRef} className="mx-auto max-w-4xl px-6 pt-28 pb-10">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -326,20 +328,20 @@ export default function Projects() {
         {/* Filter buttons */}
         <div className="mb-8 flex flex-wrap gap-2">
           <button
-            className={`px-3 py-1 rounded-full text-sm ${
+            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
               activeFilter === 'all'
-                ? 'bg-orange-500 text-white'
-                : 'bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
+                ? 'bg-orange-500 text-white shadow-md shadow-orange-500/25'
+                : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
             }`}
             onClick={() => setActiveFilter('all')}
           >
             All Projects
           </button>
           <button
-            className={`px-3 py-1 rounded-full text-sm ${
+            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
               activeFilter === 'featured'
-                ? 'bg-orange-500 text-white'
-                : 'bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
+                ? 'bg-orange-500 text-white shadow-md shadow-orange-500/25'
+                : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
             }`}
             onClick={() => setActiveFilter('featured')}
           >
@@ -348,10 +350,10 @@ export default function Projects() {
           {availableTopics.slice(0, 6).map(language => (
             <button
               key={language}
-              className={`px-3 py-1 rounded-full text-sm ${
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
                 activeFilter === language
-                  ? 'bg-orange-500 text-white'
-                  : 'bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
+                  ? 'bg-orange-500 text-white shadow-md shadow-orange-500/25'
+                  : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
               }`}
               onClick={() => setActiveFilter(language)}
             >
@@ -361,7 +363,7 @@ export default function Projects() {
           {availableTopics.length > 6 && (
             <div className="relative" ref={dropdownRef}>
               <button 
-                className="px-3 py-1 rounded-full text-sm bg-gray-200 text-gray-100 dark:bg-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700"
+                className="px-3 py-1 rounded-full text-sm bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
                 More Languages...

@@ -9,17 +9,34 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   @apply dark:bg-darkBg bg-bg;
 }
 
+/* Scrollbar - Light mode */
 body {
-  --sb-track-color: #ffffff;
-  --sb-thumb-color: #000000;
+  --sb-track-color: #f5f5f5;
+  --sb-thumb-color: #c0c0c0;
+}
+
+/* Scrollbar - Dark mode */
+.dark body,
+body.dark {
+  --sb-track-color: #1a1a2e;
+  --sb-thumb-color: #444;
+}
+
+:root.dark {
+  --sb-track-color: #1a1a2e;
+  --sb-thumb-color: #444;
 }
 
 body::-webkit-scrollbar {
-  width: 16px;
+  width: 10px;
 }
 
 body::-webkit-scrollbar-track {
@@ -28,10 +45,31 @@ body::-webkit-scrollbar-track {
 
 body::-webkit-scrollbar-thumb {
   background: var(--sb-thumb-color);
+  border-radius: 5px;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: #fb933d;
 }
 
 @supports not selector(::-webkit-scrollbar) {
   body {
     scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
   }
+}
+
+/* Cursor blink animation */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.animate-blink {
+  animation: blink 1s infinite;
+}
+
+/* Selection color */
+::selection {
+  background-color: rgba(251, 147, 61, 0.3);
+  color: inherit;
 }

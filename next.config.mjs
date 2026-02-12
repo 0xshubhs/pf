@@ -10,6 +10,13 @@ const nextConfig = {
     };
     return config;
   },
+  turbopack: {
+    resolve: {
+      fallback: {
+        fs: false,
+      },
+    },
+  },
 }
 
 export default nextConfig;
