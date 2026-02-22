@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
 import memeImage from '../assets/meme.png'
 import { motion } from 'framer-motion'
-import { TwitterIcon } from 'lucide-react'
+import { FileText, Download, ExternalLink } from 'lucide-react'
 import {
   SiTelegram,
   SiX,
@@ -294,36 +294,48 @@ const Contact = () => {
               delay={0.4}
             />
             
-            {/* Contact Form */}
-              {/* <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                viewport={{ once: true }}
-                className="md:col-span-2 p-6 rounded-xl bg-gradient-to-br from-gray-900 to-gray-800 dark:from-gray-800 dark:to-gray-900 shadow-lg"
-              >
-                <h3 className="text-lg font-semibold text-white mb-4">Quick Message</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <input 
-                    type="text" 
-                    placeholder="Name" 
-                    className="px-4 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-orange-400 focus:outline-none"
-                  />
-                  <input 
-                    type="email" 
-                    placeholder="Email" 
-                    className="px-4 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-orange-400 focus:outline-none"
-                  />
+            {/* Resume Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              viewport={{ once: true }}
+              className="md:col-span-2 p-6 rounded-xl bg-gradient-to-br from-gray-900 to-gray-800 dark:from-gray-800 dark:to-gray-900
+                        shadow-lg hover:shadow-orange-400/20 transition-all duration-300 border border-gray-700/50"
+            >
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 rounded-full bg-orange-400 text-white">
+                    <FileText className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-400">Resume</p>
+                    <p className="font-medium text-white">View or download my resume</p>
+                  </div>
                 </div>
-                <textarea 
-                  placeholder="Your message" 
-                  rows={4}
-                  className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-orange-400 focus:outline-none mb-4"
-                />
-                <button className="px-6 py-2 bg-orange-400 text-white font-medium rounded-lg hover:bg-orange-500 transition-colors duration-300">
-                  Send Message
-                </button>
-              </motion.div> */}
+                <div className="flex gap-3">
+                  <a
+                    href="/resume.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-orange-400 text-white font-medium
+                              hover:bg-orange-500 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-orange-400/25"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    View
+                  </a>
+                  <a
+                    href="/resume.pdf"
+                    download
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-lg border border-orange-400 text-orange-400 font-medium
+                              hover:bg-orange-400 hover:text-white transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-orange-400/25"
+                  >
+                    <Download className="w-4 h-4" />
+                    Download
+                  </a>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </motion.div>
 
