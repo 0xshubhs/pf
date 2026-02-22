@@ -104,7 +104,7 @@ const Nav = () => {
                 : "text-gray-900 dark:text-white hover:text-orange-400 dark:hover:text-orange-400 scale-100"
             )}
           >
-            0xshubhs
+            0xshubhs.eth
           </Link>
 
           {/* Desktop Navigation */}

@@ -35,7 +35,9 @@ const PAST_ROLES: {
     company: 'AttenomicsLabs',
     role: 'Solidity Engineer',
     description:
-      '',
+      `Wrote and maintained comprehensive test suites for smart contracts covering unit, integration, and fuzz testing.
+       Identified and documented security edge cases including reentrancy, integer overflow, access control bypasses, and frontrunning vectors.
+       Worked on hardening contract logic through rigorous testing and security-focused code reviews.`,
     startDate: 'Feb 2025',
     endDate: 'Now',
     link: '',
