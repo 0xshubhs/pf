@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Link } from 'next-view-transitions'
+import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
 import clsx from 'clsx'
@@ -53,6 +53,18 @@ const Nav = () => {
     }
   }, [lastScrollY])
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isOpen])
+
   const toggleMenu = () => {
     setIsOpen(!isOpen)
   }
@@ -61,9 +73,11 @@ const Nav = () => {
     <div 
       className={clsx(
         "fixed w-full z-50 transition-all duration-300 ",
-        scrolled 
-          ? "bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-md py-2" 
-          : "bg-transparent py-4",
+        isOpen
+          ? "bg-white dark:bg-gray-900 shadow-md py-2"
+          : scrolled
+            ? "bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-md py-2"
+            : "bg-transparent py-4",
         // Hide navbar when scrolling down (after 150px) and not at the top, show when scrolling up
         !isOpen && scrollDirection === 'down' && scrolled && lastScrollY > 150 
           ? "-top-20" 
@@ -74,7 +88,7 @@ const Nav = () => {
         {/* Overlay for mobile menu */}
         {isOpen && (
           <div
-            className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
+            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
             onClick={toggleMenu}
           />
         )}
@@ -84,7 +98,7 @@ const Nav = () => {
           <Link
             href="/"
             className={clsx(
-              "text-xl font-bold transition-all duration-300 font-bold",
+              "text-xl font-bold transition-all duration-300",
               scrolled 
                 ? "text-gray-900 hover:text-orange-500 dark:text-white dark:hover:text-orange-400 scale-95" 
                 : "text-gray-900 dark:text-white hover:text-orange-400 dark:hover:text-orange-400 scale-100"

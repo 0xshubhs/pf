@@ -331,11 +331,11 @@ export default function Hacks() {
   }, [activeFilter]);
 
   const introText =
-    'My journey into both web2 and web3 has been deeply shaped by hackathons. Just a few months after diving into web3, I started challenging myself with projects that pushed my limits. As a competitive person, I discovered a passion for participating — and winning — in these competitions. Whether its web2 or web3, the thrill of innovating ideas and bringing them to life is something I can not get enough of. It can be an addictive experience XD.'
+    '48 hours, one idea, no sleep — that\u0027s where the best stuff gets built.'
 
   return (
     <div className="min-h-screen bg-bg">
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-6 py-16 pt-28 max-w-4xl">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: isPageLoaded ? 1 : 0, y: isPageLoaded ? 0 : 20 }}
