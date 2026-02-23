@@ -3,6 +3,11 @@ import React, { useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
 import memeImage from '../assets/meme.png'
 import { motion } from 'framer-motion'
+import BackgroundScene from '@/components/three/background-scene'
+import TextReveal from '@/components/animations/text-reveal'
+import Parallax from '@/components/animations/parallax'
+import GlowCard from '@/components/animations/glow-card'
+import { StaggerReveal, StaggerItem } from '@/components/animations/stagger-reveal'
 import { FileText, Download, ExternalLink } from 'lucide-react'
 import {
   SiTelegram,
@@ -185,6 +190,7 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-bg">
+      <BackgroundScene scene="contact" />
       <main className="container mx-auto px-6 py-16 pt-28 max-w-4xl" ref={contactRef}>
         {/* Header Section */}
         <motion.div 
@@ -198,9 +204,12 @@ const Contact = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <h1 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 to-orange-600 dark:from-white dark:to-orange-400 bg-clip-text text-transparent pb-2">
-              {"Let's Connect"}
-            </h1>
+            <TextReveal
+              text="Let's Connect"
+              mode="characters"
+              as="h1"
+              className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 to-orange-600 dark:from-white dark:to-orange-400 bg-clip-text text-transparent pb-2"
+            />
             <div className="h-1 w-20 bg-orange-500 mx-auto md:mx-0 rounded-full mt-2" />
           </motion.div>
           
@@ -210,6 +219,7 @@ const Contact = () => {
         </motion.div>
 
         {/* Meme Section */}
+        <Parallax speed={-0.1}>
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -246,6 +256,7 @@ const Contact = () => {
             </div>
           </div>
         </motion.div>
+        </Parallax>
 
         <SectionDivider />
 
@@ -264,42 +275,56 @@ const Contact = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
-            <ContactMethod 
-              icon={<SiGmail className="w-6 h-6" />}
-              label="Email"
-              value="shubht3303@gmail.com"
-              link="mailto:shubht3303@gmail.com"
-              delay={0.1}
-            />
-            <ContactMethod 
-              icon={<SiGithub className="w-6 h-6" />}
-              label="GitHub"
-              value="0xshubhs"
-              link="https://github.com/0xshubhs"
-              delay={0.2}
-            />
-            <ContactMethod 
-              icon={<SiX className="w-6 h-6" />}
-              label="X (Twitter)"
-              value="shubhamtwtt"
-              link="https://x.com/shubhamtwtt"
-              delay={0.3}
-            />
-            <ContactMethod 
-              icon={<SiTelegram className="w-6 h-6" />}
-              label="Telegram"
-              value="DevShubhamm"
-              link="https://t.me/DevShubhamm"
-              delay={0.4}
-            />
+          <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+            <StaggerItem>
+              <GlowCard>
+                <ContactMethod
+                  icon={<SiGmail className="w-6 h-6" />}
+                  label="Email"
+                  value="shubht3303@gmail.com"
+                  link="mailto:shubht3303@gmail.com"
+                  delay={0}
+                />
+              </GlowCard>
+            </StaggerItem>
+            <StaggerItem>
+              <GlowCard>
+                <ContactMethod
+                  icon={<SiGithub className="w-6 h-6" />}
+                  label="GitHub"
+                  value="0xshubhs"
+                  link="https://github.com/0xshubhs"
+                  delay={0}
+                />
+              </GlowCard>
+            </StaggerItem>
+            <StaggerItem>
+              <GlowCard>
+                <ContactMethod
+                  icon={<SiX className="w-6 h-6" />}
+                  label="X (Twitter)"
+                  value="shubhamtwtt"
+                  link="https://x.com/shubhamtwtt"
+                  delay={0}
+                />
+              </GlowCard>
+            </StaggerItem>
+            <StaggerItem>
+              <GlowCard>
+                <ContactMethod
+                  icon={<SiTelegram className="w-6 h-6" />}
+                  label="Telegram"
+                  value="DevShubhamm"
+                  link="https://t.me/DevShubhamm"
+                  delay={0}
+                />
+              </GlowCard>
+            </StaggerItem>
             
             {/* Resume Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-              viewport={{ once: true }}
+            <StaggerItem className="md:col-span-2">
+            <GlowCard>
+            <div
               className="md:col-span-2 p-6 rounded-xl bg-gradient-to-br from-gray-900 to-gray-800 dark:from-gray-800 dark:to-gray-900
                         shadow-lg hover:shadow-orange-400/20 transition-all duration-300 border border-gray-700/50"
             >
@@ -335,8 +360,10 @@ const Contact = () => {
                   </a>
                 </div>
               </div>
-            </motion.div>
-          </div>
+            </div>
+            </GlowCard>
+            </StaggerItem>
+          </StaggerReveal>
         </motion.div>
 
         {/* Quick Navigation Dot */}

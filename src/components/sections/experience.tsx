@@ -1,8 +1,8 @@
 'use client'
 
 import PAST_ROLES from '@/data/experience'
-import { motion } from 'framer-motion'
 import { ExternalLink } from 'lucide-react'
+import { StaggerReveal, StaggerItem } from '@/components/animations/stagger-reveal'
 
 interface Role {
   id: string
@@ -22,16 +22,9 @@ export default function Experience() {
       {/* Timeline line */}
       <div className="absolute left-[7px] md:left-[11px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-orange-400 via-orange-400/50 to-transparent" />
 
-      <div className="space-y-10">
-        {roles.map((role: Role, index: number) => (
-          <motion.div
-            key={role.id}
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
-            viewport={{ once: true }}
-            className="relative pl-8 md:pl-10"
-          >
+      <StaggerReveal className="space-y-10">
+        {roles.map((role: Role) => (
+          <StaggerItem key={role.id} className="relative pl-8 md:pl-10">
             {/* Timeline dot */}
             <div className="absolute left-0 top-1.5 h-4 w-4 md:h-6 md:w-6 rounded-full border-[3px] border-orange-400 bg-white dark:bg-gray-900 z-10" />
 
@@ -69,9 +62,9 @@ export default function Experience() {
                 </a>
               )}
             </div>
-          </motion.div>
+          </StaggerItem>
         ))}
-      </div>
+      </StaggerReveal>
     </div>
   )
 }

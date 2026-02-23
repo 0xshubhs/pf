@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
 import clsx from 'clsx'
 import { ThemeSwitcher } from './theme-switcher'
+import Magnetic from './magnetic'
 
 const Nav = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -95,17 +96,19 @@ const Nav = () => {
 
         <div className="flex items-center justify-between px-4">
           {/* Logo */}
-          <Link
-            href="/"
-            className={clsx(
-              "text-xl font-bold transition-all duration-300",
-              scrolled 
-                ? "text-gray-900 hover:text-orange-500 dark:text-white dark:hover:text-orange-400 scale-95" 
-                : "text-gray-900 dark:text-white hover:text-orange-400 dark:hover:text-orange-400 scale-100"
-            )}
-          >
-            0xshubhs.eth
-          </Link>
+          <Magnetic strength={0.15}>
+            <Link
+              href="/"
+              className={clsx(
+                "text-xl font-bold transition-all duration-300",
+                scrolled
+                  ? "text-gray-900 hover:text-orange-500 dark:text-white dark:hover:text-orange-400 scale-95"
+                  : "text-gray-900 dark:text-white hover:text-orange-400 dark:hover:text-orange-400 scale-100"
+              )}
+            >
+              0xshubhs.eth
+            </Link>
+          </Magnetic>
 
           {/* Desktop Navigation */}
           <nav className={clsx(
@@ -115,18 +118,19 @@ const Nav = () => {
               : "bg-orange-400 shadow-lg"
           )}>
             {links.map((link) => (
-              <Link
-                key={link.path}
-                href={link.path}
-                className={clsx(
-                  'rounded-md px-4 py-2 font-medium text-gray-900 transition-colors',
-                  path === link.path
-                    ? 'bg-white shadow-sm'
-                    : 'hover:bg-orange-300',
-                )}
-              >
-                {link.text}
-              </Link>
+              <Magnetic key={link.path} strength={0.2}>
+                <Link
+                  href={link.path}
+                  className={clsx(
+                    'rounded-md px-4 py-2 font-medium text-gray-900 transition-colors',
+                    path === link.path
+                      ? 'bg-white shadow-sm'
+                      : 'hover:bg-orange-300',
+                  )}
+                >
+                  {link.text}
+                </Link>
+              </Magnetic>
             ))}
             <div className="ml-2 rounded-md bg-white px-2 py-1">
               <ThemeSwitcher />

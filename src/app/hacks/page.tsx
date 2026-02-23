@@ -2,6 +2,10 @@
 import { useState, useEffect, useRef } from 'react'
 import HACKS from '@/data/hacks'
 import { motion, AnimatePresence } from 'framer-motion'
+import BackgroundScene from '@/components/three/background-scene'
+import TextReveal from '@/components/animations/text-reveal'
+import GlowCard from '@/components/animations/glow-card'
+import Parallax from '@/components/animations/parallax'
 import { ChevronLeft, ChevronRight, ExternalLink, Github, Trophy } from 'lucide-react'
 
 interface TeamMember {
@@ -335,6 +339,7 @@ export default function Hacks() {
 
   return (
     <div className="min-h-screen bg-bg">
+      <BackgroundScene scene="hacks" />
       <div className="container mx-auto px-6 py-16 pt-28 max-w-4xl">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -342,27 +347,27 @@ export default function Hacks() {
           transition={{ duration: 0.8 }}
           className="flex flex-col justify-center space-y-4 text-center max-w-3xl mx-auto"
         >
-          <motion.h1 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: isPageLoaded ? 1 : 0, y: isPageLoaded ? 0 : -20 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 dark:text-white"
-          >
-            <span className="bg-gradient-to-r from-orange-500 to-orange-700 dark:from-orange-400 dark:to-orange-600 bg-clip-text text-transparent">
-              Hackathon
-            </span> Journey
-          </motion.h1>
-          
-          <div className="relative pb-4">
-            <TypingText
-              text={introText}
-              delay={300}
-              typingSpeed={80}
-              onComplete={() => setIsTypingComplete(true)}
-              className="text-sm md:text-base lg:text-lg text-gray-700 dark:text-gray-300 leading-relaxed"
+          <div className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 dark:text-white">
+            <TextReveal
+              text="Hackathon Journey"
+              mode="words"
+              as="h1"
+              className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-orange-500 to-orange-700 dark:from-orange-400 dark:to-orange-600 bg-clip-text text-transparent justify-center"
             />
-            <div className="absolute -z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl"></div>
           </div>
+          
+          <Parallax speed={0.1}>
+            <div className="relative pb-4">
+              <TypingText
+                text={introText}
+                delay={300}
+                typingSpeed={80}
+                onComplete={() => setIsTypingComplete(true)}
+                className="text-sm md:text-base lg:text-lg text-gray-700 dark:text-gray-300 leading-relaxed"
+              />
+              <div className="absolute -z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl"></div>
+            </div>
+          </Parallax>
         </motion.div>
 
         {/* Filters */}
@@ -388,7 +393,9 @@ export default function Hacks() {
         >
           <AnimatePresence>
             {visibleHacks.map((hack, id) => (
-              <HackathonCard key={hack.name} hack={hack} index={id} />
+              <GlowCard key={hack.name}>
+                <HackathonCard hack={hack} index={id} />
+              </GlowCard>
             ))}
           </AnimatePresence>
           

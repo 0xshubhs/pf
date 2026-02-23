@@ -2,6 +2,10 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { Octokit } from '@octokit/core'
 import { motion } from 'framer-motion'
+import BackgroundScene from '@/components/three/background-scene'
+import TextReveal from '@/components/animations/text-reveal'
+import GlowCard from '@/components/animations/glow-card'
+import TiltCard from '@/components/animations/tilt-card'
 
 const BATCH_SIZE = 10
 
@@ -308,14 +312,18 @@ export default function Projects() {
 
   return (
     <div className="mx-auto max-w-4xl px-6 pt-28 pb-10">
+      <BackgroundScene scene="projects" />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <h1 className="mb-4 text-3xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 to-orange-600 dark:from-white dark:to-orange-400 bg-clip-text text-transparent pb-2">
-          Projects
-        </h1>
+        <TextReveal
+          text="Projects"
+          mode="characters"
+          as="h1"
+          className="mb-4 text-3xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 to-orange-600 dark:from-white dark:to-orange-400 bg-clip-text text-transparent pb-2"
+        />
         <div className="h-1 w-20 bg-orange-500 rounded-full mt-2 mb-8" />
 
         <p className="text-gray-600 dark:text-gray-400 max-w-2xl mb-8">
@@ -391,7 +399,11 @@ export default function Projects() {
             <SectionHeading title="Featured Projects" />
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
               {featuredProjects.map((project, index) => (
-                <ProjectCard key={project.name} project={project} index={index} />
+                <GlowCard key={project.name}>
+                  <TiltCard maxTilt={3}>
+                    <ProjectCard project={project} index={index} />
+                  </TiltCard>
+                </GlowCard>
               ))}
             </div>
           </div>
@@ -414,7 +426,11 @@ export default function Projects() {
           ) : (
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
               {(activeFilter === 'featured' ? featuredProjects : regularProjects).map((project, index) => (
-                <ProjectCard key={project.name} project={project} index={index} />
+                <GlowCard key={project.name}>
+                  <TiltCard maxTilt={3}>
+                    <ProjectCard project={project} index={index} />
+                  </TiltCard>
+                </GlowCard>
               ))}
             </div>
           )}

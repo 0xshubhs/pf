@@ -2,10 +2,12 @@
 
 import { motion } from 'framer-motion'
 import { Shield, Lock } from 'lucide-react'
+import BackgroundScene from '@/components/three/background-scene'
 
 export default function Audits() {
   return (
     <div className="min-h-screen flex items-center justify-center px-6 pt-20">
+      <BackgroundScene scene="audits" />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

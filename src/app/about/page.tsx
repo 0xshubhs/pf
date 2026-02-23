@@ -4,6 +4,9 @@ import { useState, useEffect, useRef } from 'react'
 import Skills from '@/components/sections/skills'
 import Experience from '@/components/sections/experience'
 import { motion } from 'framer-motion'
+import BackgroundScene from '@/components/three/background-scene'
+import TextReveal from '@/components/animations/text-reveal'
+import Parallax from '@/components/animations/parallax'
 
 interface TypingTextProps {
   text: string
@@ -123,6 +126,7 @@ export default function About() {
 
   return (
     <div className="min-h-screen bg-bg">
+      <BackgroundScene scene="about" />
       <main className="container mx-auto px-6 py-16 pt-28 max-w-4xl">
         {/* Intro Section */}
         <motion.div 
@@ -138,25 +142,30 @@ export default function About() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <h1 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 to-orange-600 dark:from-white dark:to-orange-400 bg-clip-text text-transparent pb-2">
-                Gm, I&apos;m Shubham.
-              </h1>
+              <TextReveal
+                text="Gm, I'm Shubham."
+                mode="characters"
+                as="h1"
+                className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 to-orange-600 dark:from-white dark:to-orange-400 bg-clip-text text-transparent pb-2"
+              />
               <div className="h-1 w-20 bg-orange-500 mx-auto md:mx-0 rounded-full mt-2" />
             </motion.div>
             
             {show && (
-              <div className="max-w-2xl mx-auto md:mx-0 text-sm md:text-base lg:text-lg space-y-4 leading-relaxed font-light text-gray-800 dark:text-gray-300">
-                {introParagraphs.map((paragraph, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.5 + index * 0.2 }}
-                  >
-                    <p>{paragraph}</p>
-                  </motion.div>
-                ))}
-              </div>
+              <Parallax speed={0.15}>
+                <div className="max-w-2xl mx-auto md:mx-0 text-sm md:text-base lg:text-lg space-y-4 leading-relaxed font-light text-gray-800 dark:text-gray-300">
+                  {introParagraphs.map((paragraph, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.5 + index * 0.2 }}
+                    >
+                      <p>{paragraph}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              </Parallax>
             )}
             
             {/* Background decorations */}

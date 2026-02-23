@@ -1,0 +1,57 @@
+'use client'
+
+import { useRef, useMemo } from 'react'
+import { useFrame } from '@react-three/fiber'
+import * as THREE from 'three'
+
+interface ShapeProps {
+  position: [number, number, number]
+  geometry: THREE.BufferGeometry
+  speed?: number
+  floatOffset?: number
+  scale?: number
+}
+
+function WireframeShape({ position, geometry, speed = 0.3, floatOffset = 0, scale = 0.6 }: ShapeProps) {
+  const meshRef = useRef<THREE.Mesh>(null)
+
+  useFrame(({ clock }) => {
+    if (!meshRef.current) return
+    const t = clock.elapsedTime
+    meshRef.current.rotation.y = t * speed
+    meshRef.current.rotation.x = t * speed * 0.4
+    // Simple sine float instead of drei Float
+    meshRef.current.position.y = position[1] + Math.sin(t * 0.8 + floatOffset) * 0.3
+  })
+
+  return (
+    <mesh ref={meshRef} position={position} scale={scale} geometry={geometry}>
+      <meshBasicMaterial color="#FD9745" wireframe transparent opacity={0.2} />
+    </mesh>
+  )
+}
+
+export default function AboutShapes() {
+  const geometries = useMemo(() => ({
+    ico: new THREE.IcosahedronGeometry(1, 0),
+    octa: new THREE.OctahedronGeometry(1, 0),
+    torus: new THREE.TorusGeometry(0.8, 0.2, 6, 16),
+    dodeca: new THREE.DodecahedronGeometry(0.8, 0),
+  }), [])
+
+  const shapes: ShapeProps[] = [
+    { position: [-4, 2, -3], geometry: geometries.ico, speed: 0.25, floatOffset: 0, scale: 0.6 },
+    { position: [4, -1.5, -4], geometry: geometries.torus, speed: 0.2, floatOffset: 1.5, scale: 0.5 },
+    { position: [-3, -2, -2], geometry: geometries.octa, speed: 0.35, floatOffset: 3, scale: 0.5 },
+    { position: [3.5, 2, -3.5], geometry: geometries.dodeca, speed: 0.3, floatOffset: 4.5, scale: 0.55 },
+    { position: [0, 3, -5], geometry: geometries.ico, speed: 0.15, floatOffset: 2, scale: 0.45 },
+  ]
+
+  return (
+    <>
+      {shapes.map((shape, i) => (
+        <WireframeShape key={i} {...shape} />
+      ))}
+    </>
+  )
+}
