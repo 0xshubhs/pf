@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import HACKS from '@/data/hacks'
 import { motion, AnimatePresence } from 'framer-motion'
 import BackgroundScene from '@/components/three/background-scene'

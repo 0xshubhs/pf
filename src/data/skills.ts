@@ -19,7 +19,6 @@ import {
   SiTailwindcss,
   SiWeb3dotjs,
   SiEthers,
-  SiRust,
   SiPython,
   SiKubernetes
 } from '@icons-pack/react-simple-icons'
