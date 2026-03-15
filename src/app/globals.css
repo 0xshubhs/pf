@@ -84,3 +84,280 @@ body::-webkit-scrollbar-thumb:hover {
   color: inherit;
 }
 
+/* ============ Liquid Glass Design System ============ */
+/* Inspired by Apple's Liquid Glass (WWDC 2025)        */
+
+:root {
+  /* Base glass surfaces — white-tinted (light mode bg is dark #1a1a1a) */
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-bg-hover: rgba(255, 255, 255, 0.1);
+  --glass-bg-active: rgba(255, 255, 255, 0.16);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-highlight: rgba(255, 255, 255, 0.6);
+  --glass-shadow: rgba(0, 0, 0, 0.25);
+  --glass-glow: rgba(253, 151, 69, 0.25);
+  --glass-glow-strong: rgba(253, 151, 69, 0.4);
+  --glass-nav-bg: rgba(255, 255, 255, 0.04);
+  --glass-nav-border: rgba(255, 255, 255, 0.08);
+  --glass-sidebar-bg: rgba(30, 30, 30, 0.85);
+
+  /* Liquid Glass optical layers (light mode — strong, bg is dark) */
+  --glass-refract-top: rgba(255, 255, 255, 0.5);
+  --glass-refract-bottom: rgba(0, 0, 0, 0.08);
+  --glass-edge-top: rgba(255, 255, 255, 0.65);
+  --glass-edge-side: rgba(255, 255, 255, 0.3);
+  --glass-edge-bottom: rgba(255, 255, 255, 0.15);
+  --glass-edge-ring: rgba(255, 255, 255, 0.25);
+  --glass-inner-glow: rgba(255, 255, 255, 0.18);
+  --glass-volume: rgba(255, 255, 255, 0.1);
+  --glass-brightness: 1.15;
+}
+
+:root.dark {
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-bg-hover: rgba(255, 255, 255, 0.08);
+  --glass-bg-active: rgba(255, 255, 255, 0.14);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-highlight: rgba(255, 255, 255, 0.12);
+  --glass-shadow: rgba(0, 0, 0, 0.35);
+  --glass-glow: rgba(253, 151, 69, 0.18);
+  --glass-glow-strong: rgba(253, 151, 69, 0.3);
+  --glass-nav-bg: rgba(255, 255, 255, 0.03);
+  --glass-nav-border: rgba(255, 255, 255, 0.05);
+  --glass-sidebar-bg: rgba(39, 41, 51, 0.88);
+
+  /* Liquid Glass optical layers (dark mode) */
+  --glass-refract-top: rgba(255, 255, 255, 0.12);
+  --glass-refract-bottom: rgba(0, 0, 0, 0.15);
+  --glass-edge-top: rgba(255, 255, 255, 0.22);
+  --glass-edge-side: rgba(255, 255, 255, 0.08);
+  --glass-edge-bottom: rgba(255, 255, 255, 0.04);
+  --glass-edge-ring: rgba(255, 255, 255, 0.06);
+  --glass-inner-glow: rgba(255, 255, 255, 0.05);
+  --glass-volume: rgba(255, 255, 255, 0.03);
+  --glass-brightness: 1.04;
+}
+
+/* --- Liquid Glass Nav Container --- */
+.liquid-glass-nav {
+  background: var(--glass-nav-bg);
+  border: 1px solid var(--glass-nav-border);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  box-shadow:
+    0 8px 32px var(--glass-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Top-edge caustic highlight */
+.liquid-glass-nav::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Mouse-tracking specular highlight on nav container */
+.liquid-glass-nav::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle 140px at var(--nav-x, 50%) var(--nav-y, 50%),
+    var(--glass-highlight) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.liquid-glass-nav:hover::after {
+  opacity: 0.5;
+}
+
+/* --- Sliding Glass Pill — layered liquid glass optics --- */
+.liquid-glass-slider {
+  position: absolute;
+  border-radius: 14px;
+
+  /* Refraction gradient — bright top (light entering), dim bottom (light exiting) */
+  background:
+    linear-gradient(
+      180deg,
+      var(--glass-refract-top) 0%,
+      transparent 50%,
+      var(--glass-refract-bottom) 100%
+    );
+
+  border: 1px solid var(--glass-edge-ring);
+
+  /* Glass optics: blur + color boost + light concentration */
+  -webkit-backdrop-filter: blur(24px) saturate(200%) brightness(var(--glass-brightness));
+  backdrop-filter: blur(24px) saturate(200%) brightness(var(--glass-brightness));
+
+  /* 3D depth — 8 shadow layers simulating a physical glass object */
+  box-shadow:
+    /* Outer drop shadows for elevation */
+    0 8px 32px var(--glass-shadow),
+    0 2px 6px var(--glass-shadow),
+    /* Top edge — brightest, light source above */
+    inset 0 1.5px 0 var(--glass-edge-top),
+    /* Side edges — medium catch light */
+    inset 1px 0 0 var(--glass-edge-side),
+    inset -1px 0 0 var(--glass-edge-side),
+    /* Bottom edge — faint reflected light */
+    inset 0 -1px 0 var(--glass-edge-bottom),
+    /* Inner volumetric glow — glass thickness */
+    inset 0 6px 20px var(--glass-volume),
+    /* Accent glow halo */
+    0 0 24px var(--glass-glow);
+
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* Inner refraction layer — light path through curved glass */
+.liquid-glass-slider::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    /* Top highlight band */
+    linear-gradient(
+      180deg,
+      var(--glass-refract-top) 0%,
+      rgba(255, 255, 255, 0.06) 30%,
+      transparent 50%,
+      rgba(255, 255, 255, 0.04) 75%,
+      var(--glass-edge-bottom) 100%
+    ),
+    /* Radial center glow */
+    radial-gradient(
+      ellipse 70% 40% at 50% 15%,
+      var(--glass-inner-glow) 0%,
+      transparent 100%
+    );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 4-sided specular flares — light catching all edges of the glass */
+.liquid-glass-slider::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  /* Inner perimeter glow ring */
+  box-shadow: inset 0 0 0 0.5px var(--glass-edge-ring);
+  background:
+    /* Top flare — strongest (primary light source above) */
+    radial-gradient(
+      ellipse 60% 30% at 50% 0%,
+      var(--glass-edge-top) 0%,
+      transparent 100%
+    ),
+    /* Bottom flare — reflected light from surface below */
+    radial-gradient(
+      ellipse 60% 30% at 50% 100%,
+      var(--glass-edge-bottom) 0%,
+      transparent 100%
+    ),
+    /* Left flare — side catch light */
+    radial-gradient(
+      ellipse 20% 50% at 0% 50%,
+      var(--glass-edge-side) 0%,
+      transparent 100%
+    ),
+    /* Right flare — side catch light */
+    radial-gradient(
+      ellipse 20% 50% at 100% 50%,
+      var(--glass-edge-side) 0%,
+      transparent 100%
+    );
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* --- Glass Pill (theme switcher) --- */
+.liquid-glass-pill {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  backdrop-filter: blur(12px) saturate(150%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transition: all 0.3s ease;
+}
+
+.liquid-glass-pill:hover {
+  background: var(--glass-bg-hover);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 0 15px var(--glass-glow);
+}
+
+/* --- Mobile Sidebar Glass --- */
+.liquid-glass-sidebar {
+  background: var(--glass-sidebar-bg);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  backdrop-filter: blur(40px) saturate(200%);
+  border-left: 1px solid var(--glass-border);
+  box-shadow: -8px 0 40px var(--glass-shadow);
+}
+
+/* --- Mobile Link Glass --- */
+.liquid-glass-mobile-link {
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.liquid-glass-mobile-link:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 4px 16px var(--glass-shadow);
+}
+
+.liquid-glass-mobile-active {
+  background: rgba(253, 151, 69, 0.12) !important;
+  border-color: rgba(253, 151, 69, 0.2) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 0 20px rgba(253, 151, 69, 0.15) !important;
+}
+
+/* --- Interaction Illumination --- */
+/* Simulates Apple's "light that travels across the material on interaction" */
+@keyframes glass-illuminate {
+  0% {
+    box-shadow:
+      0 0 0 transparent,
+      inset 0 0 0 transparent;
+  }
+  40% {
+    box-shadow:
+      0 4px 24px var(--glass-shadow),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3),
+      0 0 35px var(--glass-glow-strong);
+  }
+  100% {
+    box-shadow:
+      0 4px 20px var(--glass-shadow),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2),
+      0 0 20px var(--glass-glow);
+  }
+}
+
