@@ -16,7 +16,7 @@ export interface AuditEngagement {
 const AUDITS: AuditEngagement[] = [
   {
     protocol: 'Chainlink Payment Abstraction V2',
-    platform: 'Code4rena — Competitive Audit',
+    platform: 'Code4rena · Competitive Audit',
     date: 'March 2026',
     prizePool: '$65,000 USDC pool',
     scope: '1,060 nSLOC across 13 contracts',
@@ -29,13 +29,13 @@ const AUDITS: AuditEngagement[] = [
       'Triaged 50 Slither findings; consolidated report covering CowSwap dust-fill vectors, price-staleness edge cases, and role centralization risks',
     ],
     repoUrl: 'https://github.com/0xshubhs/security-audits/tree/main/chainlink',
-    status: 'Submissions judged duplicate / out of scope — full research, PoCs, and specs public',
+    status: 'Submissions judged duplicate / out of scope. Full research, PoCs, and specs are public',
   },
   {
-    protocol: 'Kuru Labs — On-chain CLOB',
-    platform: 'Cantina — Competitive Audit',
+    protocol: 'Kuru Labs On-chain CLOB',
+    platform: 'Cantina · Competitive Audit',
     date: '2026',
-    scope: 'Full contracts directory — order book, margin account, router, forwarder',
+    scope: 'Full contracts directory: order book, margin account, router, forwarder',
     description:
       'A fully on-chain central limit order book with backstop AMM liquidity: bitmap-tree price discovery, price-time priority matching over linked lists, and a margin account handling all maker credits. I dug into the order-matching math, flip-order rounding accumulation, the meta-transaction forwarder\'s non-sequential nonce scheme, and market-parameter misconfiguration as a DoS surface.',
     tools: ['Manual Review', 'Foundry', 'Hardhat', 'Deployment & Benchmark Scripting'],
@@ -45,7 +45,7 @@ const AUDITS: AuditEngagement[] = [
       'Built deploy + benchmark harnesses to measure storage-orderbook gas behavior under fragmented fills',
     ],
     repoUrl: 'https://github.com/0xshubhs/security-audits/tree/main/kuru-labs',
-    status: 'Submissions not accepted — full analysis and harnesses public',
+    status: 'Submissions not accepted. Full analysis and harnesses are public',
   },
 ]
 

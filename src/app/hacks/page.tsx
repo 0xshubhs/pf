@@ -130,7 +130,7 @@ const HackathonCard: React.FC<{ hack: Hack; index: number; isVisible?: boolean }
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 + 0.2 }}
-      className="rounded-lg border-2 border-border bg-main p-5 shadow-lg hover:shadow-xl transition-all duration-300 dark:border-darkBorder dark:bg-main dark:shadow-dark"
+      className="glass-panel p-5"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -209,17 +209,17 @@ const HackathonCard: React.FC<{ hack: Hack; index: number; isVisible?: boolean }
         )}
 
         {/* Content */}
-        <div className="md:w-3/5 font-base text-text flex flex-col justify-between">
+        <div className="md:w-3/5 flex flex-col justify-between">
           <div>
-            <h2 className="text-xl font-heading font-bold sm:text-2xl">
-              <span className="text-black-400">{hack.name}</span> - {hack.projectName}
+            <h2 className="text-xl font-heading font-bold sm:text-2xl text-white">
+              <span className="text-orange-400">{hack.name}</span> - {hack.projectName}
             </h2>
 
-            <p className="mt-3 text-gray-800 dark:text-gray-200 leading-relaxed">{hack.description}</p>
+            <p className="mt-3 text-gray-300 leading-relaxed">{hack.description}</p>
 
             {/* Team section */}
             <div className="mt-4">
-              <h3 className="font-medium text-sm uppercase tracking-wider text-gray-600 dark:text-gray-400">Team Members</h3>
+              <h3 className="font-medium text-sm uppercase tracking-wider text-gray-400">Team Members</h3>
               <div className="mt-2 flex flex-wrap gap-2">
                 {hack.team.map((member) => (
                   <a
@@ -227,7 +227,7 @@ const HackathonCard: React.FC<{ hack: Hack; index: number; isVisible?: boolean }
                     href={member.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-md border border-border px-3 py-1.5 text-sm shadow-light transition-all hover:bg-orange-400/10 hover:border-orange-400/50 hover:text-gray-900 dark:hover:text-white text-gray-700 dark:border-darkBorder dark:bg-secondaryBlack dark:text-darkText dark:shadow-dark flex items-center gap-1.5"
+                    className="rounded-md border border-white/15 bg-white/5 px-3 py-1.5 text-sm text-gray-200 transition-all hover:bg-orange-400/15 hover:border-orange-400/40 hover:text-white flex items-center gap-1.5"
                   >
                     {member.name}
                     <ExternalLink size={12} />
@@ -239,12 +239,12 @@ const HackathonCard: React.FC<{ hack: Hack; index: number; isVisible?: boolean }
             {/* Prizes section */}
             {hack.prizes && hack.prizes.length > 0 && (
               <div className="mt-4">
-                <h3 className="font-medium text-sm uppercase tracking-wider text-gray-600 dark:text-gray-400">Achievements</h3>
+                <h3 className="font-medium text-sm uppercase tracking-wider text-gray-400">Achievements</h3>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {hack.prizes.map((prize) => (
                     <span
                       key={prize}
-                      className="rounded-md border border-orange-600/30 bg-orange-50 dark:bg-orange-500/10 px-3 py-1.5 text-sm text-orange-700 dark:text-orange-300 flex items-center gap-1.5"
+                      className="rounded-md border border-orange-400/30 bg-orange-400/10 px-3 py-1.5 text-sm text-orange-300 flex items-center gap-1.5"
                     >
                       <Trophy size={14} />
                       {prize}
@@ -259,7 +259,7 @@ const HackathonCard: React.FC<{ hack: Hack; index: number; isVisible?: boolean }
           <div className="mt-6 flex gap-4">
             {hack.liveLink && (
               <a
-                className="flex items-center justify-center gap-2 rounded-md border-2 border-border bg-white px-4 py-2 text-center text-sm font-semibold text-gray-800 shadow-light transition-all hover:translate-y-[-2px] hover:bg-orange-400 hover:text-white hover:border-orange-500 dark:border-darkBorder dark:bg-secondaryBlack dark:text-darkText dark:shadow-dark dark:hover:bg-orange-500 dark:hover:text-white flex-1"
+                className="flex items-center justify-center gap-2 rounded-md border border-white/15 bg-white/10 px-4 py-2 text-center text-sm font-semibold text-gray-100 transition-all hover:translate-y-[-2px] hover:bg-orange-500 hover:border-orange-500 hover:text-white flex-1"
                 href={hack.liveLink}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -270,7 +270,7 @@ const HackathonCard: React.FC<{ hack: Hack; index: number; isVisible?: boolean }
             )}
             {hack.repoUrl && (
               <a
-                className="flex items-center justify-center gap-2 rounded-md border-2 border-border bg-white px-4 py-2 text-center text-sm font-semibold text-gray-800 shadow-light transition-all hover:translate-y-[-2px] hover:bg-gray-800 hover:text-white hover:border-gray-700 dark:border-darkBorder dark:bg-secondaryBlack dark:text-darkText dark:shadow-dark dark:hover:bg-gray-700 dark:hover:text-white flex-1"
+                className="flex items-center justify-center gap-2 rounded-md border border-white/15 bg-white/10 px-4 py-2 text-center text-sm font-semibold text-gray-100 transition-all hover:translate-y-[-2px] hover:bg-white/20 hover:border-white/30 hover:text-white flex-1"
                 href={hack.repoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -300,7 +300,7 @@ const HackathonFilter: React.FC<{
           className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
             activeFilter === filter
               ? 'bg-orange-400 text-white shadow-md'
-              : 'bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-800/50 dark:text-gray-300 dark:hover:bg-gray-700'
+              : 'border border-white/15 bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white'
           }`}
           onClick={() => setActiveFilter(filter)}
         >

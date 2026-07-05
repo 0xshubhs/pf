@@ -53,17 +53,17 @@ const ProjectCard = ({ project, index }: { project: ProjectData; index: number }
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: (index % BATCH_SIZE) * 0.05 }}
       viewport={{ once: true, margin: "-50px" }}
-      className={`h-full rounded-base border-2 border-border bg-main p-4 shadow-light dark:border-darkBorder dark:shadow-dark sm:p-5 ${
-        project.isFeatured ? 'ring-2 ring-orange-400 ring-offset-2 ring-offset-white dark:ring-offset-secondaryBlack' : ''
+      className={`h-full glass-panel p-4 sm:p-5 ${
+        project.isFeatured ? 'ring-1 ring-orange-400/60' : ''
       }`}
     >
-      <div className="flex h-full flex-col font-base text-text">
+      <div className="flex h-full flex-col text-gray-100">
         <div className="flex justify-between items-start mb-2">
-          <h2 className="text-xl font-heading sm:text-2xl">
+          <h2 className="text-xl font-heading sm:text-2xl text-white">
             {project.name}
           </h2>
           {project.stars > 0 && (
-            <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+            <div className="flex items-center text-sm text-gray-400">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-4 w-4 mr-1"
@@ -78,12 +78,12 @@ const ProjectCard = ({ project, index }: { project: ProjectData; index: number }
           )}
         </div>
 
-        <p className="mb-2 mt-2 flex-grow">{project.description}</p>
+        <p className="mb-2 mt-2 flex-grow text-gray-300">{project.description}</p>
 
         {project.language && (
-          <div className="mb-4 flex flex-wrap gap-2 dark:text-white">
+          <div className="mb-4 flex flex-wrap gap-2">
             <span
-              className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-800 rounded-full font-medium"
+              className="px-2 py-1 text-xs border border-white/15 bg-white/10 text-gray-200 rounded-full font-medium"
             >
               {project.language}
             </span>
@@ -91,7 +91,7 @@ const ProjectCard = ({ project, index }: { project: ProjectData; index: number }
         )}
 
         <div className="mt-auto">
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+          <p className="text-xs text-gray-400 mb-4">
             Last updated: {project.lastUpdated ? new Date(project.lastUpdated).toLocaleDateString() : 'Unknown date'}
           </p>
 
@@ -102,7 +102,7 @@ const ProjectCard = ({ project, index }: { project: ProjectData; index: number }
                 translateY: -3,
                 boxShadow: "0px 0px 0px rgba(0,0,0,0)"
               }}
-              className="cursor-pointer rounded-base border-2 border-border bg-white px-4 py-2 text-center text-sm font-base shadow-light transition-all dark:border-darkBorder dark:bg-secondaryBlack dark:text-darkText dark:shadow-dark sm:text-base"
+              className="cursor-pointer rounded-md border border-white/15 bg-white/10 px-4 py-2 text-center text-sm font-medium text-gray-100 transition-all hover:bg-white/20 hover:text-white sm:text-base"
               href={project.liveLink}
               target="_blank"
               rel="noopener noreferrer"
@@ -115,7 +115,7 @@ const ProjectCard = ({ project, index }: { project: ProjectData; index: number }
                 translateY: -3,
                 boxShadow: "0px 0px 0px rgba(0,0,0,0)"
               }}
-              className="cursor-pointer rounded-base border-2 border-border bg-white px-4 py-2 text-center text-sm font-base shadow-light transition-all dark:border-darkBorder dark:bg-secondaryBlack dark:text-darkText dark:shadow-dark sm:text-base"
+              className="cursor-pointer rounded-md border border-white/15 bg-white/10 px-4 py-2 text-center text-sm font-medium text-gray-100 transition-all hover:bg-white/20 hover:text-white sm:text-base"
               href={project.repoUrl}
               target="_blank"
               rel="noopener noreferrer"

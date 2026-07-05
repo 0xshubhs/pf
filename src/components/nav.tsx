@@ -8,6 +8,7 @@ import { motion, useMotionValue, useSpring } from 'framer-motion'
 import clsx from 'clsx'
 import { ThemeSwitcher } from './theme-switcher'
 import Magnetic from './magnetic'
+import GlassLens from './glass-lens'
 
 const Nav = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -187,6 +188,8 @@ const Nav = () => {
   }, [path, snapToLink, targetOpacity])
 
   return (
+    <>
+    <GlassLens />
     <div
       className={clsx(
         "fixed w-full z-50 transition-all duration-300 ",
@@ -201,14 +204,6 @@ const Nav = () => {
       )}
     >
       <div className="mx-auto max-w-7xl">
-        {/* Overlay for mobile menu */}
-        {isOpen && (
-          <div
-            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
-            onClick={toggleMenu}
-          />
-        )}
-
         <div className="flex items-center justify-between px-4">
           {/* Logo */}
           <Magnetic strength={0.15}>
@@ -283,20 +278,33 @@ const Nav = () => {
           </button>
         </div>
 
-        {/* Mobile Sidebar */}
+      </div>
+    </div>
+
+      {/* Mobile menu overlay + sidebar live OUTSIDE the backdrop-filtered navbar:
+          a filtered ancestor becomes the containing block for fixed children,
+          which collapsed the sidebar's height and left it transparent. */}
+      {isOpen && (
         <div
-          className={clsx(
-            'fixed right-0 top-0 z-50 h-full w-64 transform transition-transform duration-300 ease-in-out lg:hidden liquid-glass-sidebar',
-            isOpen ? 'translate-x-0' : 'translate-x-full',
-          )}
-        >
+          className="fixed inset-0 z-[55] bg-black/50 backdrop-blur-sm lg:hidden"
+          onClick={toggleMenu}
+        />
+      )}
+
+      {/* Mobile Sidebar */}
+      <div
+        className={clsx(
+          'fixed right-0 top-0 z-[60] h-screen w-64 transform transition-transform duration-300 ease-in-out lg:hidden liquid-glass-sidebar',
+          isOpen ? 'translate-x-0' : 'translate-x-full',
+        )}
+      >
           <div className="p-4">
             <div className="mb-8 flex items-center justify-between">
-              <span className="text-lg font-bold text-gray-900 dark:text-white">
+              <span className="text-lg font-bold text-white">
                 Menu
               </span>
               <button
-                className="text-gray-900 hover:text-orange-400 dark:text-white"
+                className="text-gray-200 hover:text-orange-400"
                 onClick={toggleMenu}
               >
                 <X size={24} />
@@ -310,8 +318,8 @@ const Nav = () => {
                   className={clsx(
                     'rounded-xl px-4 py-2 text-center font-medium transition-all duration-300 liquid-glass-mobile-link',
                     path === link.path
-                      ? 'liquid-glass-mobile-active font-bold text-gray-900 dark:text-white'
-                      : 'text-gray-900 dark:text-white',
+                      ? 'liquid-glass-mobile-active font-bold text-white'
+                      : 'text-gray-200',
                   )}
                   onClick={toggleMenu}
                 >
@@ -325,9 +333,8 @@ const Nav = () => {
               </div>
             </nav>
           </div>
-        </div>
       </div>
-    </div>
+    </>
   )
 }
 
