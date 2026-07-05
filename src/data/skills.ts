@@ -20,7 +20,9 @@ import {
   SiWeb3dotjs,
   SiEthers,
   SiPython,
-  SiKubernetes
+  SiKubernetes,
+  SiRust,
+  SiGo
 } from '@icons-pack/react-simple-icons'
 
 const SKILLS: { field: string; skills: { skill: string; icon: IconType }[] }[] =
@@ -43,6 +45,10 @@ const SKILLS: { field: string; skills: { skill: string; icon: IconType }[] }[] =
         {
           skill: 'nodejs',
           icon: SiNodedotjs,
+        },
+        {
+          skill: 'go',
+          icon: SiGo,
         },
         {
           skill: 'python',
@@ -94,18 +100,18 @@ const SKILLS: { field: string; skills: { skill: string; icon: IconType }[] }[] =
           icon: SiWeb3dotjs,
         },
         {
-          skill: 'foundryvtt',
+          skill: 'foundry',
           icon: SiFoundryvirtualtabletop,
         },
         {
           skill: 'ethers',
           icon: SiEthers,
         },
-        // {
-        //   skill: 'rust',
-        //   icon: SiRust,
-        // }
-      ], 
+        {
+          skill: 'rust',
+          icon: SiRust,
+        },
+      ],
     }
   ]
 

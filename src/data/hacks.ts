@@ -20,6 +20,91 @@ export interface HackathonProject {
 
 const HACKS: HackathonProject[] = [
   {
+    name: "Fhenix CoFHE Builder Waves",
+    projectName: "Sigill",
+    description: "Private checkout on Base Sepolia using FHE. Buy a gift card and nobody on-chain can see what you bought, how much you paid, or the code you got back — encrypted product IDs and amounts via Fhenix CoFHE, confidential cUSDC escrow, bonded observers fulfilling orders through Reloadly, and AES-wrapped codes only the buyer can unseal. Live at sigill.store.",
+    previewImage: "https://opengraph.githubassets.com/1/0xshubhs/sigill",
+    dashboardImage: "",
+    projectImage: "",
+    team: [
+      { name: "Shubham", link: "https://x.com/shubhamtwtt" },
+      { name: "Ayush", link: "https://github.com/ayushsingh82" }
+    ],
+    prizes: [
+      "💰 850 USDT won across Waves 2–5"
+    ],
+    liveLink: "https://www.sigill.store/",
+    repoUrl: "https://github.com/0xshubhs/sigill"
+  },
+  {
+    name: "Aleo Privacy Buildathon",
+    projectName: "SilentBid",
+    description: "Privacy-preserving sealed-bid auctions on Aleo. Bid amounts stay hidden in private ZK records until the reveal phase — no front-running, no bid sniping, not even the auctioneer can peek. Commit-reveal flow with BHP256 commitments and uniform max-bid escrow so transfers leak zero information. Live on Aleo Testnet as silentbid_v3.aleo.",
+    previewImage: "https://opengraph.githubassets.com/1/0xshubhs/aleo-",
+    dashboardImage: "",
+    projectImage: "",
+    team: [
+      { name: "Shubham", link: "https://x.com/shubhamtwtt" },
+      { name: "Ayush", link: "https://github.com/ayushsingh82" }
+    ],
+    prizes: [
+      "🏆 Buildathon Winner — 178 USDT"
+    ],
+    liveLink: "https://testnet.explorer.provable.com/program/silentbid_v3.aleo",
+    repoUrl: "https://github.com/0xshubhs/aleo-"
+  },
+  {
+    name: "x402 Buildathon",
+    projectName: "x402 Sessions",
+    description: "Sign once, settle many times — session-based x402 micropayments. One ERC-20 approve opens a spending-capped session, then every API call settles on-chain with no wallet popups. Shipped as a full stack: TypeScript SDK on npm (elsa-x402-sessions), hosted facilitator, and a confidential Solana variant with encrypted amounts powered by Inco Lightning.",
+    previewImage: "https://opengraph.githubassets.com/1/0xshubhs/elsa402-sessions",
+    dashboardImage: "",
+    projectImage: "",
+    team: [
+      { name: "Shubham", link: "https://x.com/shubhamtwtt" },
+      { name: "Ayush", link: "https://github.com/ayushsingh82" }
+    ],
+    prizes: [
+      "💸 200 USDC Winner"
+    ],
+    liveLink: "https://www.npmjs.com/package/elsa-x402-sessions",
+    repoUrl: "https://github.com/0xshubhs/elsa402-sessions"
+  },
+  {
+    name: "SoSoValue Buildathon",
+    projectName: "AutoFund AI",
+    description: "A one-person hedge fund agent. Ingests SoSoValue market signals, scores four strategies against the current regime, gates exposure through a volatility/drawdown/correlation risk engine, and executes on SoDEX — every decision explainable with a live reasoning trail.",
+    previewImage: "https://opengraph.githubassets.com/1/0xshubhs/AutoFund-AI",
+    dashboardImage: "",
+    projectImage: "",
+    team: [
+      { name: "Shubham", link: "https://x.com/shubhamtwtt" },
+      { name: "Ayush", link: "https://github.com/ayushsingh82" }
+    ],
+    prizes: [
+      "🥇 Buildathon Prize Winner — 100+ USDT"
+    ],
+    liveLink: "https://github.com/0xshubhs/AutoFund-AI",
+    repoUrl: "https://github.com/0xshubhs/AutoFund-AI"
+  },
+  {
+    name: "SoSoValue Buildathon",
+    projectName: "MarketMind",
+    description: "An AI market-intelligence engine — the research desk to AutoFund's trader. Fuses SoSoValue news, macro, sector, SSI index, and SoDEX microstructure feeds into cause-effect chains, surfaces contradictions between what news says and what the data shows, and answers 'why is the market doing this?' with cited evidence. Read-only by design.",
+    previewImage: "https://opengraph.githubassets.com/1/ayushsingh82/MarketMind",
+    dashboardImage: "",
+    projectImage: "",
+    team: [
+      { name: "Shubham", link: "https://x.com/shubhamtwtt" },
+      { name: "Ayush", link: "https://github.com/ayushsingh82" }
+    ],
+    prizes: [
+      "🥇 Buildathon Prize Winner — 100+ USDT"
+    ],
+    liveLink: "https://github.com/ayushsingh82/MarketMind",
+    repoUrl: "https://github.com/ayushsingh82/MarketMind"
+  },
+  {
     name: "EThIndia 2024",
     projectName: "Fomo Wallet",
     description: "A decentralized Anonymous betting Platform Levereging AI to help users place bets and create FOMO(Fear of Missing out) on certain bets that may be created by some authentic users around twitter.",
@@ -32,6 +117,7 @@ const HACKS: HackathonProject[] = [
       { name: "Shubham", link: "https://x.com/shubhamtwtss" }
     ],
     prizes: [
+      "💰 350 USDC in prize winnings",
       "🏆 Graph Top 10 Projects",
       "🔐 Excellence in Privacy",
       "⭐ Coinbase Developer Pack Prize Pool Winner"

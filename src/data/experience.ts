@@ -44,14 +44,14 @@ const PAST_ROLES: {
   },  
   {
     id: '4',
-    company: 'Qoneqt',
+    company: 'Qoneqt (Human Quotient Pvt Ltd)',
     role: 'Blockchain Engineer',
     description:
-      `Started as a Blockchain Intern Developer at Human Qoutient Pvt Ltd .    
-       Built Subgraph ( Customised Graph Protocol's Indexer ) / NodeJS Indexer For the Oboswap DEX .
-       Created Customised ( Precompiles like Gas , Reward Managers , Custom Fees, Difficulties, etc ) L1's on Avalanche Subnets  .
-       Implemented Gasless Transactions for users on Qoneqt ( EIP712 , EIP2771 ) .
-      `,
+      `Lead blockchain engineer on Maha Fraxn, the company's RWA (real-world asset) exchange — top contributor on the codebase (129 commits, ~4x the next contributor).
+       Built the on-chain audit trail in Solidity (bytes32 listing IDs, usernames, full trade metadata) and spun up the exchange's own custom EVM chain with a block explorer.
+       Shipped the admin platform end-to-end: trade monitoring with buy/sell filters and exports, fee statistics, market-maker fee logic (side-aware fees, 0% for listing owners and assigned MMs), and KYC flows.
+       Implemented an i18n system covering all 22 Indian scheduled languages, and hardened the stack with security fixes from parallel audit passes.
+       Earlier: built Subgraph + NodeJS indexers for the Oboswap DEX, customised Avalanche Subnet L1s (precompiles for gas, reward managers, custom fees), and gasless transactions on Qoneqt via EIP-712 / EIP-2771 meta-transactions.`,
     startDate: 'April 2025',
     endDate: 'Now',
     link: 'https://qoneqt.com/profile/0xshubham',

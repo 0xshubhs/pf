@@ -111,17 +111,11 @@ export default function About() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const introText =
-    'A quiet Saturday evening, lofi beats playing softly, rain tapping ' +
-    'against the window, and a warm cup of coffee by my side. The cursor ' +
-    'blinks, and I type console.log("Am a hecker lol "). This is my flow state — ' +
-    'building decentralized solutions, solving puzzles, and bringing ideas ' +
-    'to life. Two years deep in Web3, crafting smart contracts and dApps. ' +
-    'Beyond the code, I breathe music, clear my mind through meditation, ' +
-    'and push limits at the gym.'
-
   const introParagraphs = [
-    'building on-chain, breaking things for fun, and shipping what matters.'
+    'Blockchain engineer, two-plus years deep in Web3. I build the whole stack — Solidity and FHE contracts, custom EVM chains, indexers, and the frontends that make them usable.',
+    "By day I'm the lead blockchain engineer on Maha Fraxn at Qoneqt — an RWA exchange running on its own custom chain, where I built the on-chain audit trail, the admin and fee systems, and i18n for all 22 Indian scheduled languages. Top contributor on the codebase by 4x.",
+    "By night I ship hackathon projects that keep winning: private FHE checkouts on Fhenix (Sigill), sealed-bid ZK auctions on Aleo (SilentBid), sign-once-settle-many x402 payment sessions on Base and Solana, and AI trading agents on SoSoValue. Six paid wins and counting.",
+    "Privacy tech is my lane — FHE (Zama, Fhenix, Inco), zero-knowledge (Aleo), stealth addresses, confidential payments. If a transaction can leak something, I've probably built a way to seal it. Off the keyboard: music, meditation, and the gym.",
   ]
 
   return (
