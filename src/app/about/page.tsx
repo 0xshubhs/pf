@@ -113,7 +113,7 @@ export default function About() {
 
   const introParagraphs = [
     'Blockchain engineer, two-plus years deep in Web3. I build the whole stack — Solidity and FHE contracts, custom EVM chains, indexers, and the frontends that make them usable.',
-    "By day I'm the lead blockchain engineer on Maha Fraxn at Qoneqt — an RWA exchange running on its own custom chain, where I built the on-chain audit trail, the admin and fee systems, and i18n for all 22 Indian scheduled languages. Top contributor on the codebase by 4x.",
+    "By day I'm the lead blockchain engineer on Maha Fraxn at Qoneqt — an RWA exchange running on its own custom chain, where I built the on-chain audit trail, the admin and fee systems, and i18n for all 22 Indian scheduled languages. 700+ commits — ~89% of the codebase's entire history.",
     "By night I ship hackathon projects that keep winning: private FHE checkouts on Fhenix (Sigill), sealed-bid ZK auctions on Aleo (SilentBid), sign-once-settle-many x402 payment sessions on Base and Solana, and AI trading agents on SoSoValue. Six paid wins and counting.",
     "Privacy tech is my lane — FHE (Zama, Fhenix, Inco), zero-knowledge (Aleo), stealth addresses, confidential payments. If a transaction can leak something, I've probably built a way to seal it. Off the keyboard: music, meditation, and the gym.",
   ]
