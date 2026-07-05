@@ -14,21 +14,21 @@ const AuditCard: React.FC<{ audit: AuditEngagement; index: number }> = ({ audit,
   >
     <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-2 mb-3">
       <div>
-        <h2 className="text-xl md:text-2xl font-bold text-white">
+        <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
           {audit.protocol}
         </h2>
-        <p className="text-sm font-medium text-orange-400 mt-1">
+        <p className="text-sm font-medium text-orange-600 dark:text-orange-400 mt-1">
           {audit.platform}
           {audit.prizePool ? ` · ${audit.prizePool}` : ''}
         </p>
       </div>
-      <div className="text-sm text-gray-400 md:text-right shrink-0">
+      <div className="text-sm text-gray-500 dark:text-gray-400 md:text-right shrink-0">
         <p>{audit.date}</p>
         <p>{audit.scope}</p>
       </div>
     </div>
 
-    <p className="text-sm md:text-base leading-relaxed text-gray-300 mb-4">
+    <p className="text-sm md:text-base leading-relaxed text-gray-700 dark:text-gray-300 mb-4">
       {audit.description}
     </p>
 
@@ -36,7 +36,7 @@ const AuditCard: React.FC<{ audit: AuditEngagement; index: number }> = ({ audit,
       {audit.tools.map((tool) => (
         <span
           key={tool}
-          className="inline-flex items-center gap-1 rounded-full border border-orange-400/30 bg-orange-400/10 px-3 py-1 text-xs font-medium text-orange-300"
+          className="inline-flex items-center gap-1 rounded-full border border-orange-400/30 bg-orange-400/10 px-3 py-1 text-xs font-medium text-orange-700 dark:text-orange-300"
         >
           <Wrench size={11} />
           {tool}
@@ -46,24 +46,24 @@ const AuditCard: React.FC<{ audit: AuditEngagement; index: number }> = ({ audit,
 
     <ul className="space-y-2 mb-5">
       {audit.highlights.map((point, i) => (
-        <li key={i} className="flex items-start gap-2 text-sm text-gray-400">
-          <ChevronRight size={16} className="text-orange-400 mt-0.5 shrink-0" />
+        <li key={i} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
+          <ChevronRight size={16} className="text-orange-500 dark:text-orange-400 mt-0.5 shrink-0" />
           <span>{point}</span>
         </li>
       ))}
     </ul>
 
-    <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-3 border-t border-white/10">
+    <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-3 border-t border-black/10 dark:border-white/10">
       <a
         href={audit.repoUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 text-sm font-medium text-gray-100 hover:text-orange-400 transition-colors"
+        className="inline-flex items-center gap-2 text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
       >
         <Github size={16} />
         Read the research
       </a>
-      <span className="inline-flex items-center gap-2 text-xs text-gray-400">
+      <span className="inline-flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
         <FileText size={13} />
         {audit.status}
       </span>

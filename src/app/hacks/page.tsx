@@ -211,15 +211,15 @@ const HackathonCard: React.FC<{ hack: Hack; index: number; isVisible?: boolean }
         {/* Content */}
         <div className="md:w-3/5 flex flex-col justify-between">
           <div>
-            <h2 className="text-xl font-heading font-bold sm:text-2xl text-white">
-              <span className="text-orange-400">{hack.name}</span> - {hack.projectName}
+            <h2 className="text-xl font-heading font-bold sm:text-2xl text-gray-900 dark:text-white">
+              <span className="text-orange-600 dark:text-orange-400">{hack.name}</span> - {hack.projectName}
             </h2>
 
-            <p className="mt-3 text-gray-300 leading-relaxed">{hack.description}</p>
+            <p className="mt-3 text-gray-700 dark:text-gray-300 leading-relaxed">{hack.description}</p>
 
             {/* Team section */}
             <div className="mt-4">
-              <h3 className="font-medium text-sm uppercase tracking-wider text-gray-400">Team Members</h3>
+              <h3 className="font-medium text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400">Team Members</h3>
               <div className="mt-2 flex flex-wrap gap-2">
                 {hack.team.map((member) => (
                   <a
@@ -227,7 +227,7 @@ const HackathonCard: React.FC<{ hack: Hack; index: number; isVisible?: boolean }
                     href={member.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-md border border-white/15 bg-white/5 px-3 py-1.5 text-sm text-gray-200 transition-all hover:bg-orange-400/15 hover:border-orange-400/40 hover:text-white flex items-center gap-1.5"
+                    className="rounded-md border border-black/10 bg-black/5 px-3 py-1.5 text-sm text-gray-700 dark:border-white/15 dark:bg-white/5 dark:text-gray-200 transition-all hover:bg-orange-400/15 hover:border-orange-400/40 hover:text-gray-900 dark:hover:text-white flex items-center gap-1.5"
                   >
                     {member.name}
                     <ExternalLink size={12} />
@@ -239,12 +239,12 @@ const HackathonCard: React.FC<{ hack: Hack; index: number; isVisible?: boolean }
             {/* Prizes section */}
             {hack.prizes && hack.prizes.length > 0 && (
               <div className="mt-4">
-                <h3 className="font-medium text-sm uppercase tracking-wider text-gray-400">Achievements</h3>
+                <h3 className="font-medium text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400">Achievements</h3>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {hack.prizes.map((prize) => (
                     <span
                       key={prize}
-                      className="rounded-md border border-orange-400/30 bg-orange-400/10 px-3 py-1.5 text-sm text-orange-300 flex items-center gap-1.5"
+                      className="rounded-md border border-orange-400/30 bg-orange-400/10 px-3 py-1.5 text-sm text-orange-700 dark:text-orange-300 flex items-center gap-1.5"
                     >
                       <Trophy size={14} />
                       {prize}
@@ -259,7 +259,7 @@ const HackathonCard: React.FC<{ hack: Hack; index: number; isVisible?: boolean }
           <div className="mt-6 flex gap-4">
             {hack.liveLink && (
               <a
-                className="flex items-center justify-center gap-2 rounded-md border border-white/15 bg-white/10 px-4 py-2 text-center text-sm font-semibold text-gray-100 transition-all hover:translate-y-[-2px] hover:bg-orange-500 hover:border-orange-500 hover:text-white flex-1"
+                className="flex items-center justify-center gap-2 rounded-md border border-black/10 bg-black/5 px-4 py-2 text-center text-sm font-semibold text-gray-800 dark:border-white/15 dark:bg-white/10 dark:text-gray-100 transition-all hover:translate-y-[-2px] hover:bg-orange-500 hover:border-orange-500 hover:text-white flex-1"
                 href={hack.liveLink}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -270,7 +270,7 @@ const HackathonCard: React.FC<{ hack: Hack; index: number; isVisible?: boolean }
             )}
             {hack.repoUrl && (
               <a
-                className="flex items-center justify-center gap-2 rounded-md border border-white/15 bg-white/10 px-4 py-2 text-center text-sm font-semibold text-gray-100 transition-all hover:translate-y-[-2px] hover:bg-white/20 hover:border-white/30 hover:text-white flex-1"
+                className="flex items-center justify-center gap-2 rounded-md border border-black/10 bg-black/5 px-4 py-2 text-center text-sm font-semibold text-gray-800 dark:border-white/15 dark:bg-white/10 dark:text-gray-100 transition-all hover:translate-y-[-2px] hover:bg-black/10 hover:text-gray-900 dark:hover:bg-white/20 dark:hover:border-white/30 dark:hover:text-white flex-1"
                 href={hack.repoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -300,7 +300,7 @@ const HackathonFilter: React.FC<{
           className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
             activeFilter === filter
               ? 'bg-orange-400 text-white shadow-md'
-              : 'border border-white/15 bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white'
+              : 'border border-black/10 bg-black/5 text-gray-700 hover:bg-black/10 hover:text-gray-900 dark:border-white/15 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/20 dark:hover:text-white'
           }`}
           onClick={() => setActiveFilter(filter)}
         >

@@ -119,6 +119,11 @@ body::-webkit-scrollbar-thumb:hover {
   --glass-inner-glow: rgba(255, 255, 255, 0.18);
   --glass-volume: rgba(255, 255, 255, 0.1);
   --glass-brightness: 1.15;
+
+  /* Content card glass — light theme: frosted white over light surfaces */
+  --glass-panel-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.55) 100%);
+  --glass-panel-border: rgba(0, 0, 0, 0.08);
+  --glass-panel-inset: rgba(255, 255, 255, 0.85);
 }
 
 :root.dark {
@@ -144,6 +149,11 @@ body::-webkit-scrollbar-thumb:hover {
   --glass-inner-glow: rgba(255, 255, 255, 0.05);
   --glass-volume: rgba(255, 255, 255, 0.03);
   --glass-brightness: 1.04;
+
+  /* Content card glass — dark theme: white-tinted translucent */
+  --glass-panel-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.04) 100%);
+  --glass-panel-border: rgba(255, 255, 255, 0.08);
+  --glass-panel-inset: rgba(255, 255, 255, 0.14);
 }
 
 /* --- Liquid Glass Nav Container --- */
@@ -305,17 +315,13 @@ body::-webkit-scrollbar-thumb:hover {
 .glass-panel {
   position: relative;
   border-radius: 16px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.09) 0%,
-    rgba(255, 255, 255, 0.04) 100%
-  );
-  border: 1px solid var(--glass-border);
+  background: var(--glass-panel-bg);
+  border: 1px solid var(--glass-panel-border);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
   backdrop-filter: blur(20px) saturate(160%);
   box-shadow:
     0 8px 32px var(--glass-shadow),
-    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 1px 0 var(--glass-panel-inset),
     inset 0 -1px 0 rgba(255, 255, 255, 0.04);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
