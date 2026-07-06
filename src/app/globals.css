@@ -124,6 +124,7 @@ body::-webkit-scrollbar-thumb:hover {
   --glass-panel-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.55) 100%);
   --glass-panel-border: rgba(0, 0, 0, 0.08);
   --glass-panel-inset: rgba(255, 255, 255, 0.85);
+  --glass-panel-shadow: rgba(100, 100, 111, 0.12);
 }
 
 :root.dark {
@@ -154,6 +155,7 @@ body::-webkit-scrollbar-thumb:hover {
   --glass-panel-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.04) 100%);
   --glass-panel-border: rgba(255, 255, 255, 0.08);
   --glass-panel-inset: rgba(255, 255, 255, 0.14);
+  --glass-panel-shadow: rgba(0, 0, 0, 0.35);
 }
 
 /* --- Liquid Glass Nav Container --- */
@@ -320,7 +322,7 @@ body::-webkit-scrollbar-thumb:hover {
   -webkit-backdrop-filter: blur(20px) saturate(160%);
   backdrop-filter: blur(20px) saturate(160%);
   box-shadow:
-    0 8px 32px var(--glass-shadow),
+    0 8px 32px var(--glass-panel-shadow),
     inset 0 1px 0 var(--glass-panel-inset),
     inset 0 -1px 0 rgba(255, 255, 255, 0.04);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
@@ -342,7 +344,7 @@ body::-webkit-scrollbar-thumb:hover {
 .glass-panel:hover {
   border-color: rgba(253, 151, 69, 0.25);
   box-shadow:
-    0 12px 40px var(--glass-shadow),
+    0 12px 40px var(--glass-panel-shadow),
     inset 0 1px 0 rgba(255, 255, 255, 0.18),
     0 0 28px var(--glass-glow);
 }
