@@ -1,0 +1,117 @@
+% Shubham Tiwari — resume
+% Compile: docker run --rm -v "$PWD":/work -w /work texlive/texlive:latest-small pdflatex resume.tex
+% Output goes to public/resume.pdf via: cp resume.pdf ../public/resume.pdf
+\documentclass[letterpaper,10pt]{article}
+
+\usepackage[margin=0.5in,top=0.42in,bottom=0.42in]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\setlength{\leftmargini}{1.15em}
+
+% --- helpers -----------------------------------------------------------
+\newcommand{\sectionrule}[1]{%
+  \vspace{5pt}%
+  {\large\scshape\bfseries #1}\par\vspace{1pt}\hrule\vspace{3pt}%
+}
+\newcommand{\entry}[2]{%
+  \textbf{#1} \hfill {\small #2}\par%
+}
+\newcommand{\subentry}[2]{%
+  {\itshape #1} \hfill {\small\itshape #2}\par\vspace{1pt}%
+}
+\newenvironment{bullets}{%
+  \begin{itemize}\setlength{\itemsep}{1pt}\setlength{\parskip}{0pt}
+\setlength{\leftmargini}{1.15em}\setlength{\topsep}{2pt}%
+}{\end{itemize}\vspace{2pt}}
+
+\begin{document}
+
+% --- header ------------------------------------------------------------
+\begin{center}
+  {\LARGE\bfseries SHUBHAM TIWARI}\\[3pt]
+  {\small 9323315388 \;\textperiodcentered\; \href{mailto:shubht3303@gmail.com}{shubht3303@gmail.com}
+  \;\textperiodcentered\; \href{https://github.com/0xshubhs}{github.com/0xshubhs}
+  \;\textperiodcentered\; \href{https://www.0xshubhs.com}{0xshubhs.com}
+  \;\textperiodcentered\; \href{https://x.com/shubhamtwtt}{x.com/shubhamtwtt}}
+\end{center}
+
+% --- summary -----------------------------------------------------------
+\sectionrule{Summary}
+Blockchain engineer working across EVM infrastructure, privacy tech (FHE, ZK), and custom chain deployments.
+Lead engineer on a production RWA exchange running its own chain; built PoA networks on Reth, shipped Solidity
+governance and audit-trail systems, and won six paid hackathons across FHE, ZK, and payments tracks.
+
+% --- education ---------------------------------------------------------
+\sectionrule{Education}
+\entry{Lokmanya Tilak College of Engineering}{Mumbai, India}
+\subentry{Bachelor of Engineering in Computer Engineering -- 8.6 GPA}{May 2025}
+
+% --- tech & oss --------------------------------------------------------
+\sectionrule{Technologies \& Open Source}
+\begin{bullets}
+  \item \textbf{Blockchain \& EVM:} Solidity, Foundry, Hardhat, Viem, Wagmi, Ethers.js, Avalanche Subnets, Reth, EVM internals
+  \item \textbf{Privacy:} FHE (Zama FHEVM, Fhenix CoFHE, Inco Lightning), ZK (Aleo/Leo), sealed-bid auctions, confidential payments
+  \item \textbf{Languages \& Infra:} Rust, Go, TypeScript, Node.js, Next.js, AWS, Docker, Kubernetes, Cloudflare Workers
+  \item \textbf{Open Source:} 143 merged PRs -- DefiLlama TVL adapter fix, Foundry book (\texttt{vm.parseJsonKeys} docs),
+        Starknet Quest Rust API perf optimization, Witnet \texttt{elliptic-curve-solidity}
+\end{bullets}
+
+% --- experience --------------------------------------------------------
+\sectionrule{Experience}
+
+\entry{Qoneqt (Human Quotient Pvt Ltd)}{Remote}
+\subentry{Blockchain Engineer}{April 2025 -- Present}
+\begin{bullets}
+  \item Lead engineer on \textbf{Maha Fraxn}, the company's RWA exchange: 700+ commits ($\sim$89\% of the codebase) across
+        Solidity contracts, a dedicated EVM chain with block explorer, and the Go/TypeScript backend.
+  \item Designed the on-chain audit trail (bytes32 listing IDs, trade metadata) and admin platform: trade monitoring
+        with exports, fee statistics, side-aware market-maker fees, and KYC flows.
+  \item Shipped i18n covering all 22 Indian scheduled languages and hardened the stack with fixes from parallel security audits.
+  \item Deployed custom L1s on Avalanche Subnets with tailored precompiles (gas, rewards, fees) -- cut block time 40\%
+        over default config.
+  \item Built Subgraph + fallback Node.js indexer for the Oboswap DEX (query latency $\sim$2s $\rightarrow$ under 200ms) and
+        gasless transactions (EIP-712/EIP-2771) that removed 60\%+ onboarding drop-off.
+\end{bullets}
+
+\entry{Attenomics Labs}{Remote}
+\subentry{Solidity Engineer}{Feb 2025 -- Present}
+\begin{bullets}
+  \item Wrote end-to-end test suites across the full contract surface: reentrancy, access control, overflows, storage collisions.
+  \item Built internal tooling to flag front-running, MEV sandwich vectors, and price manipulation in pending tx flows.
+  \item Audited proxy/UUPS upgrade patterns for storage layout conflicts and initialization bugs.
+\end{bullets}
+
+% --- projects ----------------------------------------------------------
+\sectionrule{Projects \& Hackathon Wins}
+
+\entry{Sigill -- \href{https://www.sigill.store/}{sigill.store}}{Fhenix CoFHE Builder Waves -- 850 USDT won}
+\begin{bullets}
+  \item Private FHE checkout on Base Sepolia: encrypted product IDs and amounts, confidential cUSDC escrow, bonded
+        observers fulfilling gift-card orders, AES-wrapped codes only the buyer can unseal.
+\end{bullets}
+
+\entry{SilentBid -- \href{https://github.com/0xshubhs/aleo-}{Github}}{Aleo Privacy Buildathon Winner -- 178 USDT}
+\begin{bullets}
+  \item Sealed-bid ZK auctions live on Aleo testnet: commit-reveal with BHP256 commitments and uniform max-bid escrow
+        so bids leak zero information; Chainlink CRE variant for Uniswap CCA token launches.
+\end{bullets}
+
+\entry{x402 Sessions -- \href{https://www.npmjs.com/package/elsa-x402-sessions}{npm}}{x402 Buildathon -- 200 USDC won}
+\begin{bullets}
+  \item Sign-once settle-many x402 micropayments: TypeScript SDK on npm, hosted facilitator, and a confidential Solana
+        variant with encrypted amounts on Inco Lightning.
+\end{bullets}
+
+\entry{Custom-reth-chain -- \href{https://github.com/0xshubhs/custom-reth-chain}{Github}}{Rust, Solidity, Docker}
+\begin{bullets}
+  \item Full PoA blockchain on Reth, EVM-compatible through Prague: consensus validation, signer-key block production,
+        on-chain governance for chain config and treasury; 194 passing tests.
+\end{bullets}
+
+\textbf{Other wins:} {\small FomoWallet (EthIndia 2024, 350 USDC + Graph Top 10 + Excellence in Privacy), AutoFund AI \&
+MarketMind (SoSoValue Buildathon, 100+ USDT each), StealthPass (UNFOLD 2024 Avalanche track winner).}
+
+\end{document}

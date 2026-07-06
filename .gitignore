@@ -42,3 +42,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 pnpm-workspace.yaml
+resume/*.aux
+resume/*.log
+resume/*.out
+resume/*.gf
+resume/missfont.log
