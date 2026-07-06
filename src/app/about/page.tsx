@@ -3,6 +3,7 @@ import React from 'react'
 import { useState, useEffect, useRef } from 'react'
 import Skills from '@/components/sections/skills'
 import Experience from '@/components/sections/experience'
+import Contributions from '@/components/sections/contributions'
 import { motion } from 'framer-motion'
 import BackgroundScene from '@/components/three/background-scene'
 import TextReveal from '@/components/animations/text-reveal'
@@ -99,7 +100,8 @@ export default function About() {
   const sectionRefs = {
     intro: useRef<HTMLDivElement>(null),
     skills: useRef<HTMLDivElement>(null),
-    experience: useRef<HTMLDivElement>(null)
+    experience: useRef<HTMLDivElement>(null),
+    contributions: useRef<HTMLDivElement>(null)
   }
 
   useEffect(() => {
@@ -115,6 +117,7 @@ export default function About() {
     'Blockchain engineer, two-plus years deep in Web3. I build the whole stack: Solidity and FHE contracts, custom EVM chains, indexers, and the frontends that make them usable.',
     "By day I'm the lead blockchain engineer on Maha Fraxn at Qoneqt, an RWA exchange running on its own custom chain, where I built the on-chain audit trail, the admin and fee systems, and i18n for all 22 Indian scheduled languages. 700+ commits, ~89% of the codebase's entire history.",
     "By night I ship hackathon projects that keep winning: private FHE checkouts on Fhenix (Sigill), sealed-bid ZK auctions on Aleo (SilentBid), sign-once-settle-many x402 payment sessions on Base and Solana, and AI trading agents on SoSoValue. Six paid wins and counting.",
+    "When something upstream is broken I fix it there too: DefiLlama's TVL adapters, the Foundry book, Starknet Quest's Rust API, Witnet's elliptic curve library.",
     "Privacy tech is my lane: FHE (Zama, Fhenix, Inco), zero-knowledge (Aleo), stealth addresses, confidential payments. If a transaction can leak something, I've probably built a way to seal it. Off the keyboard: music, meditation, and the gym.",
   ]
 
@@ -207,7 +210,27 @@ export default function About() {
           </div>
           <Experience />
         </motion.div>
-        
+
+        <SectionDivider />
+
+        {/* Open Source Contributions Section */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true, margin: "-100px" }}
+          className="mt-12"
+          ref={sectionRefs.contributions}
+        >
+          <div className="text-center md:text-left mb-8">
+            <SectionHeading title="Open Source Contributions" />
+            <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto md:mx-0">
+              When something upstream is broken, I fix it there. Merged and in-review PRs across the ecosystem.
+            </p>
+          </div>
+          <Contributions />
+        </motion.div>
+
         {/* Quick Navigation Dots */}
         <div className="fixed right-8 top-1/2 transform -translate-y-1/2 z-50 hidden lg:block">
           <div className="flex flex-col space-y-4">
