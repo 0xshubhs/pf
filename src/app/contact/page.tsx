@@ -150,16 +150,15 @@ const ContactMethod: React.FC<ContactMethodProps> = ({ icon, label, value, link,
       transition={{ duration: 0.5, delay: delay }}
       viewport={{ once: true }}
       onClick={() => window.open(link, '_blank')}
-      className="flex items-center p-4 rounded-xl bg-gradient-to-br from-gray-900 to-gray-800 dark:from-gray-800 dark:to-gray-900 
-                shadow-lg hover:shadow-orange-400/20 cursor-pointer group transition-all duration-300 
+      className="glass-panel flex items-center p-4 cursor-pointer group transition-all duration-300
                 hover:-translate-y-1 hover:scale-[1.02]"
     >
       <div className="p-3 rounded-full bg-orange-400 text-white mr-4 group-hover:bg-white group-hover:text-orange-400 transition-colors duration-300">
         {icon}
       </div>
       <div>
-        <p className="text-sm text-gray-400">{label}</p>
-        <p className="font-medium text-white group-hover:text-orange-400 transition-colors duration-300">{value}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
+        <p className="font-medium text-gray-900 dark:text-white group-hover:text-orange-500 dark:group-hover:text-orange-400 transition-colors duration-300">{value}</p>
       </div>
     </motion.div>
   )
@@ -325,8 +324,7 @@ const Contact = () => {
             <StaggerItem className="md:col-span-2">
             <GlowCard>
             <div
-              className="md:col-span-2 p-6 rounded-xl bg-gradient-to-br from-gray-900 to-gray-800 dark:from-gray-800 dark:to-gray-900
-                        shadow-lg hover:shadow-orange-400/20 transition-all duration-300 border border-gray-700/50"
+              className="md:col-span-2 glass-panel p-6"
             >
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
@@ -334,8 +332,8 @@ const Contact = () => {
                     <FileText className="w-6 h-6" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-400">Resume</p>
-                    <p className="font-medium text-white">View or download my resume</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Resume</p>
+                    <p className="font-medium text-gray-900 dark:text-white">View or download my resume</p>
                   </div>
                 </div>
                 <div className="flex gap-3">

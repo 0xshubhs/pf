@@ -47,7 +47,7 @@ const PAST_ROLES: {
     company: 'Qoneqt (Human Quotient Pvt Ltd)',
     role: 'Blockchain Engineer',
     description:
-      `Lead blockchain engineer on Maha Fraxn, the company's RWA (real-world asset) exchange. Built it end to end with 700+ commits across all branches, ~89% of the repo's entire commit history.
+      `Lead blockchain engineer on Maha Fraxn, the company's RWA (real-world asset) exchange. Built it end to end with 700+ commits across all branches, over 90% of the repo's entire commit history.
        Built the on-chain audit trail in Solidity (bytes32 listing IDs, usernames, full trade metadata) and spun up the exchange's own custom EVM chain with a block explorer.
        Shipped the admin platform end-to-end: trade monitoring with buy/sell filters and exports, fee statistics, market-maker fee logic (side-aware fees, 0% for listing owners and assigned MMs), and KYC flows.
        Implemented an i18n system covering all 22 Indian scheduled languages, and hardened the stack with security fixes from parallel audit passes.

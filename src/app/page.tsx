@@ -79,7 +79,7 @@ const CircleButton = ({ text, delay = 0 }: { text: string; delay?: number }) => 
         y: -5,
         boxShadow: "0 10px 30px -5px rgba(251, 147, 61, 0.4)"
       }}
-      className="mx-auto flex h-16 w-16 flex-col justify-center rounded-full bg-gradient-to-br from-orange-400 to-orange-600 text-center text-[10px] text-white shadow-lg transition duration-300 ease-in-out hover:from-white hover:to-gray-100 hover:text-orange-500 md:h-24 md:w-24 md:text-base"
+      className="mx-auto flex h-16 w-16 flex-col justify-center rounded-full liquid-glass-pill text-center text-[10px] text-gray-900 dark:text-white transition duration-300 ease-in-out hover:text-orange-500 dark:hover:text-orange-400 md:h-24 md:w-24 md:text-base"
     >
       <p className="cursor-default select-none font-bold">{text}</p>
     </motion.div>
@@ -166,7 +166,7 @@ export default function Home() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3, duration: 0.8 }}
-                className="mt-6 flex flex-col space-y-3 text-center text-xl md:text-2xl font-extrabold"
+                className="glass-panel mt-6 flex flex-col space-y-3 px-6 py-5 text-center text-xl md:text-2xl font-extrabold md:px-10"
               >
                 <TypingText
                   text={textSequence[0].text}
@@ -232,7 +232,7 @@ export default function Home() {
                   <Magnetic strength={0.2}>
                     <Link
                       href="/projects"
-                      className="flex items-center gap-2 rounded-full border-2 border-gray-800 dark:border-gray-300 px-6 py-3 text-sm font-semibold text-gray-800 dark:text-gray-200 transition-all duration-300 hover:border-orange-500 hover:text-orange-500 dark:hover:border-orange-400 dark:hover:text-orange-400 hover:-translate-y-0.5"
+                      className="liquid-glass-pill flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-gray-800 dark:text-gray-200 transition-all duration-300 hover:text-orange-500 dark:hover:text-orange-400 hover:-translate-y-0.5"
                     >
                       View Projects
                     </Link>
