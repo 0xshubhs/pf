@@ -18,32 +18,12 @@ const CONTRIBUTIONS: Contribution[] = [
     project: 'DefiLlama',
     org: 'DefiLlama/DefiLlama-Adapters · dimension-adapters',
     blurb:
-      "DeFi's canonical TVL and metrics aggregator. Adapter fixes and new integrations across protocols on Ethereum, Monad, HyperEVM, and Bitcoin bridges.",
+      "DeFi's canonical TVL and metrics aggregator. Adapter fixes keeping protocol TVL reporting accurate.",
     prs: [
       {
         title: 'fix(t3tris-finance): read grossTVL so TVL is not reported as 0',
         url: 'https://github.com/DefiLlama/DefiLlama-Adapters/pull/19880',
         status: 'merged',
-      },
-      {
-        title: 'fix(fiamma): read TVL from on-chain FIABTC supply',
-        url: 'https://github.com/DefiLlama/DefiLlama-Adapters/pull/19906',
-        status: 'open',
-      },
-      {
-        title: 'fix(felix): add two missing Felix Metamorpho vaults',
-        url: 'https://github.com/DefiLlama/DefiLlama-Adapters/pull/19905',
-        status: 'open',
-      },
-      {
-        title: 'fix(k3): stop double-counting Monad Euler vault owner',
-        url: 'https://github.com/DefiLlama/DefiLlama-Adapters/pull/19904',
-        status: 'open',
-      },
-      {
-        title: 'feat(turboflow): track fees and revenue',
-        url: 'https://github.com/DefiLlama/dimension-adapters/pull/7928',
-        status: 'open',
       },
     ],
   },
@@ -82,6 +62,19 @@ const CONTRIBUTIONS: Contribution[] = [
       {
         title: 'fix: typo in EllipticCurve.sol helper functions',
         url: 'https://github.com/witnet/elliptic-curve-solidity/pull/39',
+        status: 'merged',
+      },
+    ],
+  },
+  {
+    project: 'GDSC LTCE',
+    org: 'GDSCltce/AIML',
+    blurb:
+      "Google Developer Student Clubs chapter. Built out the AI/ML learning track: regression, classification, deep learning, and reinforcement learning resources.",
+    prs: [
+      {
+        title: '15 merged PRs building the AIML curriculum',
+        url: 'https://github.com/GDSCltce/AIML/pulls?q=is%3Apr+author%3A0xshubhs+is%3Amerged',
         status: 'merged',
       },
     ],
