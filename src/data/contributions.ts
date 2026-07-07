@@ -18,8 +18,18 @@ const CONTRIBUTIONS: Contribution[] = [
     project: 'DefiLlama',
     org: 'DefiLlama/DefiLlama-Adapters · dimension-adapters',
     blurb:
-      "DeFi's canonical TVL and metrics aggregator. Adapter fixes keeping protocol TVL reporting accurate.",
+      "DeFi's canonical TVL and metrics aggregator. Adapter fixes and new integrations keeping protocol metrics accurate.",
     prs: [
+      {
+        title: 'feat(turboflow): track fees and revenue in dimension-adapters',
+        url: 'https://github.com/DefiLlama/dimension-adapters/pull/7928',
+        status: 'merged',
+      },
+      {
+        title: 'fix(felix): add two missing Felix Metamorpho vaults',
+        url: 'https://github.com/DefiLlama/DefiLlama-Adapters/pull/19905',
+        status: 'merged',
+      },
       {
         title: 'fix(t3tris-finance): read grossTVL so TVL is not reported as 0',
         url: 'https://github.com/DefiLlama/DefiLlama-Adapters/pull/19880',
