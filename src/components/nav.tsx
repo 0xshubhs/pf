@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X } from 'lucide-react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 import clsx from 'clsx'
 import { ThemeSwitcher } from './theme-switcher'
@@ -11,7 +10,6 @@ import Magnetic from './magnetic'
 import GlassLens from './glass-lens'
 
 const Nav = () => {
-  const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [scrollDirection, setScrollDirection] = useState<'up' | 'down' | null>(null)
   const [lastScrollY, setLastScrollY] = useState(0)
@@ -57,20 +55,6 @@ const Nav = () => {
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [lastScrollY])
-
-  // Lock body scroll when mobile menu is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [isOpen])
-
-  const toggleMenu = () => setIsOpen(!isOpen)
 
   // Helper: measure a link and position pill there (for active/leave states)
   const snapToLink = useCallback((linkEl: HTMLAnchorElement, instant = false) => {
@@ -193,12 +177,10 @@ const Nav = () => {
     <div
       className={clsx(
         "fixed w-full z-50 transition-all duration-300 ",
-        isOpen
-          ? "bg-white/80 dark:bg-gray-900/80 backdrop-blur-2xl shadow-lg py-2"
-          : scrolled
-            ? "bg-white/50 dark:bg-gray-900/50 backdrop-blur-2xl shadow-lg py-2"
-            : "bg-transparent py-4",
-        !isOpen && scrollDirection === 'down' && scrolled && lastScrollY > 150
+        scrolled
+          ? "bg-white/50 dark:bg-gray-900/50 backdrop-blur-2xl shadow-lg py-2"
+          : "bg-transparent py-4",
+        scrollDirection === 'down' && scrolled && lastScrollY > 150
           ? "-top-20"
           : "top-0"
       )}
@@ -264,76 +246,10 @@ const Nav = () => {
             </div>
           </nav>
 
-          {/* Mobile Menu Button */}
-          <button
-            className={clsx(
-              "hover:text-orange-400 lg:hidden",
-              scrolled
-                ? "text-gray-900 dark:text-white"
-                : "text-gray-900 dark:text-white"
-            )}
-            onClick={toggleMenu}
-          >
-            <Menu size={24} />
-          </button>
         </div>
 
       </div>
     </div>
-
-      {/* Mobile menu overlay + sidebar live OUTSIDE the backdrop-filtered navbar:
-          a filtered ancestor becomes the containing block for fixed children,
-          which collapsed the sidebar's height and left it transparent. */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-[55] bg-black/50 backdrop-blur-sm lg:hidden"
-          onClick={toggleMenu}
-        />
-      )}
-
-      {/* Mobile Sidebar */}
-      <div
-        className={clsx(
-          'fixed right-0 top-0 z-[60] h-screen w-64 transform transition-transform duration-300 ease-in-out lg:hidden liquid-glass-sidebar',
-          isOpen ? 'translate-x-0' : 'translate-x-full',
-        )}
-      >
-          <div className="p-4">
-            <div className="mb-8 flex items-center justify-between">
-              <span className="text-lg font-bold text-white">
-                Menu
-              </span>
-              <button
-                className="text-gray-200 hover:text-orange-400"
-                onClick={toggleMenu}
-              >
-                <X size={24} />
-              </button>
-            </div>
-            <nav className="flex flex-col gap-4">
-              {links.map((link) => (
-                <Link
-                  key={link.path}
-                  href={link.path}
-                  className={clsx(
-                    'rounded-xl px-4 py-2 text-center font-medium transition-all duration-300 liquid-glass-mobile-link',
-                    path === link.path
-                      ? 'liquid-glass-mobile-active font-bold text-white'
-                      : 'text-gray-200',
-                  )}
-                  onClick={toggleMenu}
-                >
-                  {link.text}
-                </Link>
-              ))}
-              <div className="mt-4 flex justify-center">
-                <div className="rounded-xl p-2 liquid-glass-pill">
-                  <ThemeSwitcher />
-                </div>
-              </div>
-            </nav>
-          </div>
-      </div>
     </>
   )
 }
