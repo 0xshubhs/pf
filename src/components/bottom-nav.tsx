@@ -4,9 +4,9 @@ import React, { useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Home, User, FolderGit2, Swords, ShieldCheck, Mail } from 'lucide-react'
+import { Home, User, FolderGit2, Swords, ShieldCheck, Mail, Sun, Moon } from 'lucide-react'
+import { useTheme } from 'next-themes'
 import clsx from 'clsx'
-import { ThemeSwitcher } from './theme-switcher'
 
 // The work tab groups three pages; tap opens the current one, long-press (450ms)
 // opens a glass flyout to switch between them.
@@ -27,6 +27,7 @@ const tabClass = (active: boolean) =>
 const BottomNav = () => {
   const path = usePathname()
   const router = useRouter()
+  const { setTheme, resolvedTheme } = useTheme()
   const [flyoutOpen, setFlyoutOpen] = useState(false)
   const holdTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const heldRef = useRef(false)
@@ -146,9 +147,17 @@ const BottomNav = () => {
             <span className="text-[10px] font-medium">contact</span>
           </Link>
 
-          <div className="flex flex-1 items-center justify-center py-1">
-            <ThemeSwitcher />
-          </div>
+          {/* theme toggle — styled as a tab so it lines up with the rest.
+              icons switch via CSS dark: classes to avoid a hydration mismatch. */}
+          <button
+            className={tabClass(false)}
+            aria-label="Toggle theme"
+            onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+          >
+            <Sun size={20} className="hidden dark:block" />
+            <Moon size={20} className="block dark:hidden" />
+            <span className="text-[10px] font-medium">theme</span>
+          </button>
         </nav>
       </div>
     </>
