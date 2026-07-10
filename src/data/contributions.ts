@@ -21,6 +21,11 @@ const CONTRIBUTIONS: Contribution[] = [
       "DeFi's canonical TVL and metrics aggregator. Adapter fixes and new integrations keeping protocol metrics accurate.",
     prs: [
       {
+        title: 'fix(mainstreet): stop valuing depegged msUSD at the USDC peg (~$51M overstated)',
+        url: 'https://github.com/DefiLlama/DefiLlama-Adapters/pull/19974',
+        status: 'merged',
+      },
+      {
         title: 'fix(quickswap-v2): migrate polygon volume from dead subgraph to onchain log adapter',
         url: 'https://github.com/DefiLlama/dimension-adapters/pull/8006',
         status: 'merged',
