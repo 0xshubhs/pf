@@ -27,8 +27,16 @@ const tabClass = (active: boolean) =>
 const BottomNav = () => {
   const path = usePathname()
   const router = useRouter()
-  const { setTheme, resolvedTheme } = useTheme()
+  const { setTheme } = useTheme()
   const [flyoutOpen, setFlyoutOpen] = useState(false)
+
+  // Toggle off the live DOM state, not resolvedTheme. Brave's fingerprint shield
+  // can spoof prefers-color-scheme so resolvedTheme stays undefined, which would
+  // make the toggle one-directional. The `dark` class is always ground truth.
+  const toggleTheme = () => {
+    const isDark = document.documentElement.classList.contains('dark')
+    setTheme(isDark ? 'light' : 'dark')
+  }
   const holdTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const heldRef = useRef(false)
 
@@ -152,7 +160,7 @@ const BottomNav = () => {
           <button
             className={tabClass(false)}
             aria-label="Toggle theme"
-            onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+            onClick={toggleTheme}
           >
             <Sun size={20} className="hidden dark:block" />
             <Moon size={20} className="block dark:hidden" />
