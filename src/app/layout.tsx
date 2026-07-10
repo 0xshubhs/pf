@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter, Montserrat } from 'next/font/google'
 import './globals.css'
 import ClientShell from '@/components/client-shell'
@@ -16,6 +16,12 @@ export const metadata: Metadata = {
     shortcut: '/icon.jpg',
     apple: '/icon.jpg',
   },
+};
+
+// Declaring both schemes opts the page out of Chromium/Brave "Auto Dark Mode",
+// which otherwise force-darkens backgrounds and ignores our own theme toggle.
+export const viewport: Viewport = {
+  colorScheme: 'light dark',
 };
 
 export default function RootLayout({

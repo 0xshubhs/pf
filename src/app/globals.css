@@ -9,6 +9,15 @@
   box-sizing: border-box;
 }
 
+/* Keep the native color-scheme in sync with our class-based theme so browsers
+   (notably Brave with Auto Dark) don't force-darken backgrounds against us. */
+html:not(.dark) {
+  color-scheme: light;
+}
+html.dark {
+  color-scheme: dark;
+}
+
 html.lenis,
 html.lenis body {
   height: auto;
