@@ -21,6 +21,16 @@ const CONTRIBUTIONS: Contribution[] = [
       "DeFi's canonical TVL and metrics aggregator. Adapter fixes and new integrations keeping protocol metrics accurate.",
     prs: [
       {
+        title: 'fix(quickswap-v2): migrate polygon volume from dead subgraph to onchain log adapter',
+        url: 'https://github.com/DefiLlama/dimension-adapters/pull/8006',
+        status: 'merged',
+      },
+      {
+        title: 'fix(onixswap): update methodology for Onix.Finance rebrand',
+        url: 'https://github.com/DefiLlama/dimension-adapters/pull/8005',
+        status: 'merged',
+      },
+      {
         title: 'feat(turboflow): track fees and revenue in dimension-adapters',
         url: 'https://github.com/DefiLlama/dimension-adapters/pull/7928',
         status: 'merged',

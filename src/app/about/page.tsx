@@ -225,7 +225,7 @@ export default function About() {
           <div className="text-center md:text-left mb-8">
             <SectionHeading title="Open Source Contributions" />
             <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto md:mx-0">
-              When something upstream is broken, I fix it there. 145 merged PRs across GitHub; every badge below links to merged work.
+              When something upstream is broken, I fix it there. 147 merged PRs across GitHub; every badge below links to merged work.
             </p>
           </div>
           <Contributions />
