@@ -7,6 +7,13 @@ import CONTRIBUTIONS from '@/data/contributions'
 
 type PrStatus = 'merged' | 'open' | 'closed'
 
+interface MergedPr {
+  title: string
+  url: string
+  repo: string
+  mergedAt: string
+}
+
 const StatusBadge = ({ status }: { status: PrStatus }) =>
   status === 'merged' ? (
     <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2 py-0.5 text-[11px] font-medium text-emerald-700 dark:text-emerald-400 shrink-0">
@@ -29,11 +36,17 @@ const Contributions = () => {
   // Live statuses from /api/pr-statuses (cached server-side, revalidated hourly).
   // Until it loads — or if it fails — the static status from data/contributions.ts is shown.
   const [liveStatuses, setLiveStatuses] = useState<Record<string, PrStatus>>({})
+  // Auto-discovered merged PRs from any public org (not in the curated list above).
+  const [mergedFeed, setMergedFeed] = useState<MergedPr[]>([])
 
   useEffect(() => {
     fetch('/api/pr-statuses')
       .then((res) => (res.ok ? res.json() : {}))
       .then(setLiveStatuses)
+      .catch(() => {})
+    fetch('/api/merged-prs')
+      .then((res) => (res.ok ? res.json() : []))
+      .then(setMergedFeed)
       .catch(() => {})
   }, [])
 
@@ -77,6 +90,49 @@ const Contributions = () => {
           </ul>
         </motion.div>
       ))}
+
+      {mergedFeed.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true, margin: '-50px' }}
+          className="glass-panel p-5 md:col-span-2"
+        >
+          <div className="flex items-baseline justify-between gap-2 flex-wrap">
+            <h3 className="text-lg font-heading font-bold text-gray-900 dark:text-white">
+              Recently merged
+            </h3>
+            <span className="text-xs text-gray-500 dark:text-gray-400">
+              pulled live from GitHub, updates automatically
+            </span>
+          </div>
+
+          <ul className="mt-4 grid gap-2 md:grid-cols-2">
+            {mergedFeed.map((pr) => (
+              <li key={pr.url}>
+                <a
+                  href={pr.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-start justify-between gap-3 rounded-md border border-black/5 bg-black/[0.03] px-3 py-2 transition-all hover:border-orange-400/40 hover:bg-orange-400/10 dark:border-white/10 dark:bg-white/5"
+                >
+                  <span className="min-w-0 text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white">
+                    <span className="block truncate">{pr.title}</span>
+                    <span className="block text-[11px] text-gray-500 dark:text-gray-400">
+                      {pr.repo} · {pr.mergedAt}
+                    </span>
+                  </span>
+                  <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2 py-0.5 text-[11px] font-medium text-emerald-700 dark:text-emerald-400 shrink-0">
+                    <GitMerge size={11} />
+                    merged
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </motion.div>
+      )}
     </div>
   )
 }
