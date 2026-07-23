@@ -72,7 +72,7 @@ const TopicPill = ({ text, href, delay = 0 }: { text: string; href: string; dela
         y: -4,
         boxShadow: '0 10px 30px -5px rgba(251, 147, 61, 0.4)',
       }}
-      className="mx-auto"
+      className="mx-auto rounded-full"
     >
       <Link
         href={href}
