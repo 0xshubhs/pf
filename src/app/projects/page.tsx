@@ -1,6 +1,5 @@
 'use client'
 import { useEffect, useState, useRef, useCallback } from 'react'
-import { Octokit } from '@octokit/core'
 import { motion } from 'framer-motion'
 import BackgroundScene from '@/components/three/background-scene'
 import TextReveal from '@/components/animations/text-reveal'
@@ -8,10 +7,6 @@ import GlowCard from '@/components/animations/glow-card'
 import TiltCard from '@/components/animations/tilt-card'
 
 const BATCH_SIZE = 10
-
-const octokit = new Octokit({
-  auth: process.env.NEXT_PUBLIC_GITHUB_TOKEN,
-})
 
 interface ProjectData {
   name: string
@@ -142,38 +137,17 @@ export default function Projects() {
   const dropdownRef = useRef<HTMLDivElement>(null)
   const loaderRef = useRef<HTMLDivElement>(null)
 
-  const mapRepo = (repo: any): ProjectData => ({
-    name: repo.name,
-    description: repo.description || '',
-    repoUrl: repo.html_url,
-    liveLink: repo.homepage || repo.html_url,
-    topics: repo.topics || [],
-    lastUpdated: repo.pushed_at,
-    stars: repo.stargazers_count,
-    isFeatured: repo.topics?.includes('featured') || false,
-    language: repo.language,
-  })
-
-  // Fetch a single page of repos
+  // Fetch a single page of repos via our server-side proxy (token never
+  // reaches the browser; responses are cached server-side for an hour)
   const fetchPage = useCallback(async (pageNum: number) => {
-    const { data: repos } = await octokit.request('GET /user/repos', {
-      per_page: BATCH_SIZE,
-      page: pageNum,
-      affiliation: 'owner',
-      sort: 'updated',
-      direction: 'desc',
-    })
-
-    const batch = repos
-      .filter((repo: any) => !repo.topics?.includes('ignore'))
-      .map(mapRepo)
-
-    // If we got fewer than BATCH_SIZE, there are no more pages
-    if (repos.length < BATCH_SIZE) {
-      setHasMore(false)
+    const res = await fetch(`/api/repos?page=${pageNum}`)
+    if (!res.ok) throw new Error('Failed to fetch projects')
+    const { repos, hasMore: more } = (await res.json()) as {
+      repos: ProjectData[]
+      hasMore: boolean
     }
-
-    return batch
+    if (!more) setHasMore(false)
+    return repos
   }, [])
 
   // Initial load — first batch

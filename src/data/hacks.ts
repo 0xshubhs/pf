@@ -107,14 +107,14 @@ const HACKS: HackathonProject[] = [
   {
     name: "EThIndia 2024",
     projectName: "Fomo Wallet",
-    description: "A decentralized Anonymous betting Platform Levereging AI to help users place bets and create FOMO(Fear of Missing out) on certain bets that may be created by some authentic users around twitter.",
+    description: "A decentralized anonymous betting platform leveraging AI to help users place bets and create FOMO (fear of missing out) around bets created by authentic users on Twitter.",
     previewImage: "hackathons/fomo-logo.png",
     dashboardImage: "hackathons/fomo-dash.png",
     projectImage: "hackathons/fomo-main.png",
     team: [
       { name: "Swayam", link: "https://x.com/DevSwayam" },
       { name: "Vivek", link: "https://x.com/vwakesahu" },
-      { name: "Shubham", link: "https://x.com/shubhamtwtss" }
+      { name: "Shubham", link: "https://x.com/shubhamtwtt" }
     ],
     prizes: [
       "💰 350 USDC in prize winnings",
@@ -135,7 +135,7 @@ const HACKS: HackathonProject[] = [
      team: [
       { name: "Swayam", link: "https://x.com/DevSwayam" },
       { name: "Vivek", link: "https://x.com/vwakesahu" },
-      { name: "Shubham", link: "https://x.com/shubhamtwtss" }
+      { name: "Shubham", link: "https://x.com/shubhamtwtt" }
     ],
     prizes: ["🌊 Avalanche Etna Track Winner"],
     liveLink: "https://stealth-pass.vercel.app/",

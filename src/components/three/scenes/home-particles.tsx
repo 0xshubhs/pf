@@ -4,10 +4,13 @@ import { useRef, useMemo } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 
-const PARTICLE_COUNT = 180
+const PARTICLE_COUNT = 96
 const VOLUME = 14
 const CONNECTION_DISTANCE = 2.5
 const MOUSE_RADIUS = 4
+// Hard cap on drawn connections: keeps the line buffer tiny (a few KB
+// uploaded per frame instead of the full N² pair space).
+const MAX_LINKS = 600
 
 // Procedural glow circle texture
 function createGlowTexture() {
@@ -51,7 +54,7 @@ export default function HomeParticles() {
     return { positions: pos, velocities: vel, sizes: sz }
   }, [])
 
-  const linePositions = useMemo(() => new Float32Array(PARTICLE_COUNT * PARTICLE_COUNT * 6), [])
+  const linePositions = useMemo(() => new Float32Array(MAX_LINKS * 6), [])
   const lineGeometry = useMemo(() => {
     const geo = new THREE.BufferGeometry()
     geo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3))
@@ -95,15 +98,16 @@ export default function HomeParticles() {
     }
     posAttr.needsUpdate = true
 
-    // Connection lines
+    // Connection lines (capped at MAX_LINKS)
     let lineIdx = 0
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
+    outer: for (let i = 0; i < PARTICLE_COUNT; i++) {
       for (let j = i + 1; j < PARTICLE_COUNT; j++) {
         const dx = arr[i * 3] - arr[j * 3]
         const dy = arr[i * 3 + 1] - arr[j * 3 + 1]
         const dz = arr[i * 3 + 2] - arr[j * 3 + 2]
         const distSq = dx * dx + dy * dy + dz * dz
         if (distSq < CONNECTION_DISTANCE * CONNECTION_DISTANCE) {
+          if (lineIdx + 6 > linePositions.length) break outer
           linePositions[lineIdx++] = arr[i * 3]
           linePositions[lineIdx++] = arr[i * 3 + 1]
           linePositions[lineIdx++] = arr[i * 3 + 2]

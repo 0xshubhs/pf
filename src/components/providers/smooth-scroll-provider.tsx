@@ -20,11 +20,13 @@ export default function SmoothScrollProvider({ children }: { children: React.Rea
   const rafId = useRef<number>(0)
 
   useEffect(() => {
+    // Native scroll for users who asked for less motion
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
     const instance = new Lenis({
-      duration: 1.2,
+      duration: 0.7,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      touchMultiplier: 2,
     })
 
     setLenis(instance)

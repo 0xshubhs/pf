@@ -185,7 +185,7 @@ export default function About() {
           <div className="text-center md:text-left mb-8">
             <SectionHeading title="Skills & Technologies" />
             <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto md:mx-0">
-             Technologies I&apos;ve previously worked with and the skills Ive developed over my journey in web development and web3.
+             Technologies I&apos;ve worked with and the skills I&apos;ve developed across web development and Web3.
             </p>
           </div>
           <Skills />

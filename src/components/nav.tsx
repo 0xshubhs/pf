@@ -238,9 +238,30 @@ const Nav = () => {
                   )}
                 >
                   {link.text}
+                  {/* Persistent "you are here" marker — the hover droplet is play,
+                      this dot is truth. It survives cursor movement. */}
+                  {path === link.path && (
+                    <motion.span
+                      layoutId="nav-active-dot"
+                      className="absolute bottom-0 left-1/2 -ml-0.5 h-1 w-1 rounded-full bg-orange-500 dark:bg-orange-400"
+                    />
+                  )}
                 </Link>
               </Magnetic>
             ))}
+            <Magnetic strength={0.2}>
+              <a
+                ref={(el: HTMLAnchorElement | null) => {
+                  if (el) linkRefs.current.set('/resume.pdf', el)
+                }}
+                href="/resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative z-10 rounded-xl px-4 py-2 font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300"
+              >
+                resume
+              </a>
+            </Magnetic>
             <div className="relative z-10 ml-2 rounded-xl px-2 py-1 liquid-glass-pill">
               <ThemeSwitcher />
             </div>

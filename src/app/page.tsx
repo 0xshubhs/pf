@@ -5,257 +5,216 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import memeImage from './assets/itachi.gif'
-import { motion } from 'framer-motion'
-import { ArrowRight } from 'lucide-react'
+import { motion, useReducedMotion } from 'framer-motion'
+import { ArrowRight, FileText, ShieldCheck } from 'lucide-react'
 import BackgroundScene from '@/components/three/background-scene'
 import Magnetic from '@/components/magnetic'
-import Parallax from '@/components/animations/parallax'
 
-interface TypingTextProps {
-  text: string
-  delay?: number
-  typingSpeed?: number
-  onComplete?: () => void
-  className?: string
-}
+// Cycling subtitle — pure garnish. It never gates content and screen readers
+// get the full phrase via aria-label instead of letter-soup.
+const PHRASES = [
+  'gmeow anon ;)',
+  'sealing transactions with FHE',
+  'shipping sealed-bid ZK auctions',
+  'breaking CLOBs for sport',
+  'running my own EVM chains',
+]
 
-const TypingText: React.FC<TypingTextProps> = ({
-  text,
-  delay = 100,
-  typingSpeed = 100,
-  onComplete,
-  className = "",
-}) => {
-  const [displayText, setDisplayText] = useState('')
-  const [isComplete, setIsComplete] = useState(false)
-  const [started, setStarted] = useState(false)
+const RotatingTyping = ({ className = '' }: { className?: string }) => {
+  const prefersReduced = useReducedMotion()
+  const [phraseIdx, setPhraseIdx] = useState(0)
+  const [charCount, setCharCount] = useState(0)
+  const [deleting, setDeleting] = useState(false)
+
+  const phrase = PHRASES[phraseIdx]
 
   useEffect(() => {
-    const timer = setTimeout(() => setStarted(true), delay)
-    return () => clearTimeout(timer)
-  }, [delay])
+    if (prefersReduced) return
 
-  useEffect(() => {
-    if (!started || isComplete) return
+    let delay = deleting ? 35 : 65
+    if (!deleting && charCount === phrase.length) delay = 2200 // hold complete phrase
+    if (deleting && charCount === 0) delay = 300
 
-    let currentIndex = 0
-    const intervalId = setInterval(() => {
-      if (currentIndex <= text.length) {
-        setDisplayText(text.slice(0, currentIndex))
-        currentIndex++
+    const timer = setTimeout(() => {
+      if (!deleting) {
+        if (charCount < phrase.length) setCharCount(charCount + 1)
+        else setDeleting(true)
       } else {
-        clearInterval(intervalId)
-        setIsComplete(true)
-        onComplete?.()
+        if (charCount > 0) setCharCount(charCount - 1)
+        else {
+          setDeleting(false)
+          setPhraseIdx((phraseIdx + 1) % PHRASES.length)
+        }
       }
-    }, typingSpeed)
-
-    return () => clearInterval(intervalId)
-  }, [text, started, onComplete, isComplete, typingSpeed])
+    }, delay)
+    return () => clearTimeout(timer)
+  }, [charCount, deleting, phrase, phraseIdx, prefersReduced])
 
   return (
-    <div className={`xs:min-h-[24px] min-h-[20px] ${className}`}>
-      {isComplete ? (
-        <span className="transition-opacity duration-300 opacity-100">{text}</span>
-      ) : (
-        <span>{displayText}<span className="animate-blink">|</span></span>
-      )}
-    </div>
+    <p aria-label={phrase} className={`min-h-[24px] ${className}`}>
+      <span aria-hidden>
+        {prefersReduced ? phrase : phrase.slice(0, charCount)}
+        {!prefersReduced && <span className="animate-blink">|</span>}
+      </span>
+    </p>
   )
 }
 
-const CircleButton = ({ text, delay = 0 }: { text: string; delay?: number }) => (
-  <Magnetic strength={0.4}>
+// Topic pills — every one of these is a real link now
+const TopicPill = ({ text, href, delay = 0 }: { text: string; href: string; delay?: number }) => (
+  <Magnetic strength={0.2}>
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.5,
-        delay: delay,
-        ease: "easeOut"
-      }}
+      transition={{ duration: 0.5, delay, ease: 'easeOut' }}
       whileHover={{
-        scale: 1.15,
-        y: -5,
-        boxShadow: "0 10px 30px -5px rgba(251, 147, 61, 0.4)"
+        scale: 1.1,
+        y: -4,
+        boxShadow: '0 10px 30px -5px rgba(251, 147, 61, 0.4)',
       }}
-      className="mx-auto flex h-16 w-16 flex-col justify-center rounded-full liquid-glass-pill text-center text-[10px] text-gray-900 dark:text-white transition duration-300 ease-in-out hover:text-orange-500 dark:hover:text-orange-400 md:h-24 md:w-24 md:text-base"
+      className="mx-auto"
     >
-      <p className="cursor-default select-none font-bold">{text}</p>
+      <Link
+        href={href}
+        className="flex h-16 w-16 flex-col justify-center rounded-full liquid-glass-pill text-center text-xs text-gray-900 dark:text-white transition duration-300 ease-in-out hover:text-orange-500 dark:hover:text-orange-400 md:h-24 md:w-24 md:text-base"
+      >
+        <span className="font-bold">{text}</span>
+      </Link>
     </motion.div>
   </Magnetic>
 )
 
+const fadeUp = (delay: number) => ({
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] as const },
+})
+
 export default function Home() {
-  const [showSecond, setShowSecond] = useState(false)
-  const [showThird, setShowThird] = useState(false)
-  const [showFourth, setShowFourth] = useState(false)
-  const [showFifth, setShowFifth] = useState(false)
-  const [allTypingDone, setAllTypingDone] = useState(false)
-  const [imageLoaded, setImageLoaded] = useState(false)
-
-  const textSequence = [
-    { text: 'gmeow anon', delay: 0 },
-    { text: 'great to have you here', delay: 200 },
-    { text: 'shubham this side ', delay: 200 },
-    { text: 'ggs and welcome to my', delay: 200 },
-    { text: 'realm ;)', delay: 200 },
+  const leftPills = [
+    { text: 'FHE', href: '/hacks', delay: 0.15 },
+    { text: 'ZK', href: '/hacks', delay: 0.25 },
+    { text: 'Audits', href: '/audits', delay: 0.35 },
+    { text: 'Chains', href: '/projects', delay: 0.45 },
   ]
 
-  const leftButtons = [
-    { text: "DeFi", delay: 0.1 },
-    { text: "NFTs", delay: 0.2 },
-    { text: "DAOs", delay: 0.3 },
-    { text: "dApps", delay: 0.4 }
-  ]
-
-  const rightButtons = [
-    { text: "IPFS", delay: 0.2 },
-    { text: "NextJS", delay: 0.3 },
-    { text: "Firebase", delay: 0.4 },
-    { text: "Typescript", delay: 0.5 }
+  const rightPills = [
+    { text: 'DeFi', href: '/projects', delay: 0.2 },
+    { text: 'Payments', href: '/hacks', delay: 0.3 },
+    { text: 'Indexers', href: '/projects', delay: 0.4 },
+    { text: 'OSS', href: '/about', delay: 0.5 },
   ]
 
   return (
     <div className="flex min-h-screen flex-col bg-bg font-base overflow-hidden">
       <BackgroundScene scene="home" />
       <main className="flex-1">
-        <div className="mx-auto h-screen w-full max-w-[1240px] text-center pt-20 relative">
-          <div className="flex h-full flex-col md:flex-row">
-            {/* Left circles - hidden on mobile, visible on md and up */}
+        <div className="mx-auto min-h-screen w-full max-w-[1240px] text-center pt-24 relative">
+          <div className="flex min-h-[calc(100vh-6rem)] flex-col md:flex-row">
+            {/* Left pills - hidden on mobile */}
             <div className="hidden md:flex mt-10 w-[20%] flex-col justify-evenly">
-              {leftButtons.map((button, index) => (
-                <CircleButton key={`left-${index}`} text={button.text} delay={button.delay} />
+              {leftPills.map((pill) => (
+                <TopicPill key={pill.text} {...pill} />
               ))}
             </div>
 
-            {/* Center content */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="flex w-full md:w-[60%] flex-col items-center justify-center px-4"
-            >
-              <Parallax speed={-0.15}>
-                <div className="relative mx-auto h-[200px] w-[200px] md:h-[300px] md:w-[300px] lg:h-[380px] lg:w-[380px]">
-                  <motion.div
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{
-                      scale: imageLoaded ? 1 : 0.8,
-                      opacity: imageLoaded ? 1 : 0
-                    }}
-                    transition={{ duration: 0.5 }}
-                    className="w-full h-full"
-                  >
-                    <Image
-                      src={memeImage}
-                      alt="itachi-gif"
-                      fill
-                      className="object-contain"
-                      priority
-                      onLoad={() => setImageLoaded(true)}
-                    />
-                  </motion.div>
-
-                  {/* Glow effect behind image */}
+            {/* Center content — everything visible immediately, staggered fade only */}
+            <div className="flex w-full md:w-[60%] flex-col items-center justify-center px-4 py-8">
+              <motion.div {...fadeUp(0)}>
+                <div className="relative mx-auto h-[140px] w-[140px] md:h-[180px] md:w-[180px]">
+                  <Image src={memeImage} alt="" fill className="object-contain" priority />
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] rounded-full bg-orange-500/15 blur-3xl -z-10"></div>
                 </div>
-              </Parallax>
-
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3, duration: 0.8 }}
-                className="glass-panel mt-6 flex flex-col space-y-3 px-6 py-5 text-center text-xl md:text-2xl font-extrabold md:px-10"
-              >
-                <TypingText
-                  text={textSequence[0].text}
-                  typingSpeed={100}
-                  onComplete={() => setShowSecond(true)}
-                  className="text-gray-900 dark:text-white"
-                />
-                {showSecond && (
-                  <TypingText
-                    text={textSequence[1].text}
-                    delay={textSequence[1].delay}
-                    typingSpeed={100}
-                    onComplete={() => setShowThird(true)}
-                    className="text-gray-800 dark:text-gray-200"
-                  />
-                )}
-                {showThird && (
-                  <TypingText
-                    text={textSequence[2].text}
-                    delay={textSequence[2].delay}
-                    typingSpeed={100}
-                    onComplete={() => setShowFourth(true)}
-                    className="text-gray-900 dark:text-gray-100"
-                  />
-                )}
-                {showFourth && (
-                  <TypingText
-                    text={textSequence[3].text}
-                    delay={textSequence[3].delay}
-                    typingSpeed={100}
-                    onComplete={() => setShowFifth(true)}
-                    className="text-gray-800 dark:text-gray-200"
-                  />
-                )}
-                {showFifth && (
-                  <TypingText
-                    text={textSequence[4].text}
-                    delay={textSequence[4].delay}
-                    typingSpeed={100}
-                    onComplete={() => setAllTypingDone(true)}
-                    className="text-orange-600 dark:text-orange-400 font-bold"
-                  />
-                )}
               </motion.div>
 
-              {/* CTA buttons - appear after typing finishes */}
-              {allTypingDone && (
-                <motion.div
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.3 }}
-                  className="mt-8 flex flex-wrap gap-4 justify-center"
-                >
-                  <Magnetic strength={0.2}>
-                    <Link
-                      href="/about"
-                      className="group flex items-center gap-2 rounded-full bg-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:bg-orange-600 hover:shadow-orange-500/25 hover:shadow-xl hover:-translate-y-0.5"
-                    >
-                      Know More
-                      <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
-                    </Link>
-                  </Magnetic>
-                  <Magnetic strength={0.2}>
-                    <Link
-                      href="/projects"
-                      className="liquid-glass-pill flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-gray-800 dark:text-gray-200 transition-all duration-300 hover:text-orange-500 dark:hover:text-orange-400 hover:-translate-y-0.5"
-                    >
-                      View Projects
-                    </Link>
-                  </Magnetic>
-                </motion.div>
-              )}
+              <motion.h1
+                {...fadeUp(0.08)}
+                className="mt-5 text-4xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 to-orange-600 dark:from-white dark:to-orange-400 bg-clip-text text-transparent pb-1"
+              >
+                Shubham Tiwari
+              </motion.h1>
 
-              {/* Mobile-only buttons in grid layout */}
-              <div className="grid grid-cols-4 gap-3 mt-8 md:hidden px-2">
-                {[...leftButtons, ...rightButtons].map((button, index) => (
-                  <CircleButton key={`mobile-${index}`} text={button.text} delay={0.2 + index * 0.08} />
+              <motion.p
+                {...fadeUp(0.16)}
+                className="mt-1 text-lg md:text-2xl font-semibold text-gray-800 dark:text-gray-200"
+              >
+                Blockchain engineer &amp; security researcher
+              </motion.p>
+
+              <motion.p
+                {...fadeUp(0.24)}
+                className="mt-4 max-w-xl text-sm md:text-base leading-relaxed text-gray-700 dark:text-gray-300"
+              >
+                I build privacy tech — FHE, ZK, confidential payments — and the chains it runs
+                on. Currently lead engineer on Maha Fraxn, an RWA exchange on its own custom
+                EVM chain.
+              </motion.p>
+
+              <motion.div {...fadeUp(0.32)}>
+                <RotatingTyping className="mt-3 text-sm font-medium text-orange-600 dark:text-orange-400" />
+              </motion.div>
+
+              <motion.p
+                {...fadeUp(0.4)}
+                className="mt-5 text-xs md:text-sm text-gray-600 dark:text-gray-400"
+              >
+                148 merged OSS PRs · DefiLlama · Foundry · Starknet Quest · 6 hackathon wins
+              </motion.p>
+
+              <motion.div {...fadeUp(0.48)} className="mt-7 flex flex-wrap gap-4 justify-center">
+                <Magnetic strength={0.2}>
+                  <Link
+                    href="/projects"
+                    className="group flex items-center gap-2 rounded-full bg-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:bg-orange-600 hover:shadow-orange-500/25 hover:shadow-xl hover:-translate-y-0.5"
+                  >
+                    View Work
+                    <ArrowRight
+                      size={16}
+                      className="transition-transform duration-300 group-hover:translate-x-1"
+                    />
+                  </Link>
+                </Magnetic>
+                <Magnetic strength={0.2}>
+                  <Link
+                    href="/audits"
+                    className="liquid-glass-pill flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-gray-800 dark:text-gray-200 transition-all duration-300 hover:text-orange-500 dark:hover:text-orange-400 hover:-translate-y-0.5"
+                  >
+                    <ShieldCheck size={16} />
+                    Security Research
+                  </Link>
+                </Magnetic>
+                <Magnetic strength={0.2}>
+                  <a
+                    href="/resume.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="liquid-glass-pill flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-gray-800 dark:text-gray-200 transition-all duration-300 hover:text-orange-500 dark:hover:text-orange-400 hover:-translate-y-0.5"
+                  >
+                    <FileText size={16} />
+                    Resume
+                  </a>
+                </Magnetic>
+              </motion.div>
+
+              {/* Mobile pills */}
+              <div className="grid grid-cols-4 gap-3 mt-9 md:hidden px-2">
+                {[...leftPills, ...rightPills].map((pill, index) => (
+                  <TopicPill
+                    key={`mobile-${pill.text}`}
+                    {...pill}
+                    delay={0.2 + index * 0.06}
+                  />
                 ))}
               </div>
-            </motion.div>
+            </div>
 
-            {/* Right circles - hidden on mobile, visible on md and up */}
+            {/* Right pills - hidden on mobile */}
             <div className="hidden md:flex mt-10 w-[20%] flex-col justify-evenly">
-              {rightButtons.map((button, index) => (
-                <CircleButton key={`right-${index}`} text={button.text} delay={button.delay} />
+              {rightPills.map((pill) => (
+                <TopicPill key={pill.text} {...pill} />
               ))}
             </div>
           </div>
-
         </div>
       </main>
     </div>
