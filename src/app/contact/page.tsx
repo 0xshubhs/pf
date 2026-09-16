@@ -18,34 +18,29 @@ export default function Contact() {
       </PageHeader>
 
       {/* Meme leads the page — no frame, no rules.
-          The two Spider-Men sit at 27.6% and 71.5% across the artwork (measured
-          from meme.png, which is 577x433), NOT at the 25%/75% that a plain
-          justify-around would give. Each caption is therefore pinned to its own
-          figure's centre. The image box uses the artwork's aspect ratio so it
-          fills the box edge-to-edge — with a fixed square-ish height it was
-          letterboxed, and those percentages would have pointed at empty space. */}
-      <div className="mx-auto w-full max-w-[280px] select-none sm:max-w-[400px] md:max-w-[450px]">
-        <div className="relative h-[40px] sm:h-[54px]">
-          <p
-            className="b-dim absolute top-0 w-[124px] -translate-x-1/2 text-center text-[11px] font-bold leading-snug sm:w-[190px] sm:text-base"
-            style={{ left: '27.6%' }}
-          >
+          Captions are pinned per figure rather than spread with justify-around.
+          On desktop they sit further IN than the figures' measured centres:
+          each Spider-Man's pointing arm stretches toward the middle, so the
+          geometric centre reads as too far out to the eye. Mobile keeps the
+          measured positions, where the narrower column needs the separation. */}
+      <div className="mx-auto w-full max-w-[300px] select-none sm:max-w-[460px] md:max-w-[580px]">
+        <div className="relative h-[42px] sm:h-[56px]">
+          <p className="b-dim absolute top-0 left-[27.6%] w-[124px] -translate-x-1/2 text-center text-[11px] font-bold leading-snug sm:w-[180px] sm:text-base md:left-[31%]">
             You looking for a gud developer
           </p>
-          <p
-            className="b-dim absolute top-0 w-[124px] -translate-x-1/2 text-center text-[11px] font-bold leading-snug sm:w-[190px] sm:text-base"
-            style={{ left: '71.5%' }}
-          >
+          <p className="b-dim absolute top-0 left-[71.5%] w-[124px] -translate-x-1/2 text-center text-[11px] font-bold leading-snug sm:w-[180px] sm:text-base md:left-[68%]">
             Me looking for a gud job
           </p>
         </div>
 
+        {/* Artwork aspect ratio, so the image fills the box instead of being
+            letterboxed — the caption percentages map onto real pixels. */}
         <div className="relative mt-2 aspect-[577/433] w-full sm:mt-3">
           <Image
             src={meme}
             alt="spiderman-meme"
             fill
-            sizes="(max-width: 640px) 280px, (max-width: 768px) 400px, 450px"
+            sizes="(max-width: 640px) 300px, (max-width: 768px) 460px, 580px"
             className="object-contain"
             priority
           />
