@@ -122,14 +122,14 @@ html {
   /* Stage 1 (0-28%): a slow bloom out to roughly the size of the label, so you
      actually SEE the droplet form on the [dark]/[light] text. */
   0% {
-    clip-path: circle(0px at var(--vt-x, 100%) var(--vt-y, 0px));
+    clip-path: circle(0% at var(--vt-x, 100%) var(--vt-y, 0%));
   }
   28% {
-    clip-path: circle(var(--vt-r0, 30px) at var(--vt-x, 100%) var(--vt-y, 0px));
+    clip-path: circle(var(--vt-r0, 4%) at var(--vt-x, 100%) var(--vt-y, 0%));
   }
   /* Stage 2 (28-100%): sweeps across the page at a single steady speed. */
   100% {
-    clip-path: circle(var(--vt-r, 150vmax) at var(--vt-x, 100%) var(--vt-y, 0px));
+    clip-path: circle(var(--vt-r, 142%) at var(--vt-x, 100%) var(--vt-y, 0%));
   }
 }
 

@@ -4,7 +4,11 @@ import * as React from 'react'
 import { flushSync } from 'react-dom'
 import { useTheme } from 'next-themes'
 
-const OVERSHOOT = 1.35
+// With the origin anywhere inside the box, the distance to the farthest corner
+// is at most the full diagonal. A circle() percentage radius resolves against
+// diagonal/sqrt(2), so 142% (~sqrt(2)) always reaches it — whatever the box's
+// actual size turns out to be.
+const FULL_RADIUS_PCT = 142
 
 export function ThemeSwitcher({ className = '' }: { className?: string }) {
   const { setTheme } = useTheme()
@@ -28,20 +32,28 @@ export function ThemeSwitcher({ className = '' }: { className?: string }) {
     const x = rect.left + rect.width / 2
     const y = rect.top + rect.height / 2
 
-    // clientWidth/Height excludes the scrollbar, which is the box the snapshot
-    // is sized to — innerWidth would be ~12px too wide here.
+    // Everything below is expressed as a PERCENTAGE, deliberately.
+    //
+    // The clip-path resolves against ::view-transition-new(root)'s box, which is
+    // a snapshot — not guaranteed to be the same size as the viewport. When it
+    // isn't, a pixel coordinate is scaled by boxWidth/viewportWidth and the
+    // origin slides sideways, proportionally to its distance from the left edge.
+    // (Which is why it showed up as a large horizontal drift and no visible
+    // vertical one: the toggle sits ~28px from the top, so the same ratio is
+    // only a few pixels there.) A percentage is relative to that box, so it maps
+    // onto the same visual point no matter what size the box is.
     const vw = document.documentElement.clientWidth
     const vh = document.documentElement.clientHeight
 
-    const radius =
-      Math.hypot(Math.max(x, vw - x), Math.max(y, vh - y)) * OVERSHOOT
-    const bloom = Math.max(rect.width, rect.height) * 1.1
+    // circle() percentage radii resolve against this reference length.
+    const ref = Math.hypot(vw, vh) / Math.SQRT2
+    const bloomPct = ((Math.max(rect.width, rect.height) * 1.1) / ref) * 100
 
     const root = document.documentElement
-    root.style.setProperty('--vt-x', `${x}px`)
-    root.style.setProperty('--vt-y', `${y}px`)
-    root.style.setProperty('--vt-r', `${radius}px`)
-    root.style.setProperty('--vt-r0', `${bloom}px`)
+    root.style.setProperty('--vt-x', `${(x / vw) * 100}%`)
+    root.style.setProperty('--vt-y', `${(y / vh) * 100}%`)
+    root.style.setProperty('--vt-r', `${FULL_RADIUS_PCT}%`)
+    root.style.setProperty('--vt-r0', `${bloomPct}%`)
 
     document.startViewTransition(() => {
       // flushSync forces the theme class onto <html> inside the transition's
