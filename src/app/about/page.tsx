@@ -41,8 +41,8 @@ export default function About() {
       <section className="mt-16">
         <SectionHeading title="Open source" index="04" />
         <p className="b-dim mb-8 max-w-2xl text-base">
-          When something upstream is broken, I fix it there. 148 merged PRs across GitHub;
-          every link below goes to real work.
+          When something upstream is broken, I fix it there. Counts and the full log
+          below are pulled live from GitHub; every link goes to real merged work.
         </p>
         <Contributions />
       </section>

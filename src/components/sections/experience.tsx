@@ -10,8 +10,19 @@ interface Role {
   link?: string
 }
 
+const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
+
+// "April 2025" / "Feb 2025" -> a sortable month index. Matching on the first
+// three letters handles both the full and abbreviated month names in the data.
+const startedAt = (role: Role) => {
+  const [month, year] = role.startDate.toLowerCase().split(' ')
+  return Number(year) * 12 + MONTHS.findIndex((m) => month.startsWith(m))
+}
+
 export default function Experience() {
-  const roles = [...PAST_ROLES].reverse()
+  // Most recent role first. Sorting on the dates rather than reversing the array
+  // means the order survives someone adding a role in the wrong place.
+  const roles = [...PAST_ROLES].sort((a, b) => startedAt(b) - startedAt(a))
 
   return (
     <ol className="border-t border-rule">

@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://www.0xshubhs.com'),
   title: 'Shubham Tiwari — Blockchain Engineer & Security Researcher',
   description:
-    'FHE & ZK privacy engineering, custom EVM chains, and smart-contract security. Lead engineer on a production RWA exchange · 148 merged OSS PRs · 6 hackathon wins.',
+    'FHE & ZK privacy engineering, custom EVM chains, and smart-contract security. Lead engineer on a production RWA exchange · 115+ merged OSS PRs · 6 hackathon wins.',
   manifest: '/manifest.json',
   icons: {
     icon: '/icon.jpg',

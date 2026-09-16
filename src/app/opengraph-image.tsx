@@ -1,4 +1,5 @@
 import { ImageResponse } from 'next/og'
+import { getOssSummary } from '@/lib/github'
 
 // Rendered once at build time and served as the site's OG card, so links
 // shared on X / Discord / Telegram unfurl with a real preview.
@@ -8,7 +9,12 @@ export const contentType = 'image/png'
 
 const RULE = '2px solid #0a0a0a'
 
-export default function OgImage() {
+export default async function OgImage() {
+  // getOssSummary never throws — it returns zeroes if GitHub is unreachable,
+  // so a rate limit at build time can't break the OG card.
+  const { externalMerged } = await getOssSummary()
+  const prs = externalMerged ? String(externalMerged) : '115+'
+
   return new ImageResponse(
     (
       <div
@@ -77,7 +83,7 @@ export default function OgImage() {
 
         <div style={{ display: 'flex', borderTop: RULE }}>
           {[
-            ['148', 'merged oss prs'],
+            [prs, 'merged oss prs'],
             ['700+', 'commits'],
             ['6', 'hackathon wins'],
             ['22', 'languages shipped'],

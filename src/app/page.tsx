@@ -1,12 +1,18 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import avatar from './assets/itachi.gif'
+import { getOssSummary } from '@/lib/github'
+
+// Revalidate hourly so the PR count stays current without rebuilding.
+export const revalidate = 3600
 
 // No 'use client', no state, no effects. The landing page is now fully static
 // HTML — it renders on the server and ships zero JavaScript of its own.
 
-const STATS = [
-  { value: '148', label: 'merged oss prs' },
+// The PR count is fetched, not hard-coded — it was stale at 148 while the real
+// number had climbed well past it. Falls back if GitHub is unreachable.
+const statsFor = (mergedPrs: number) => [
+  { value: mergedPrs ? String(mergedPrs) : '115+', label: 'merged oss prs' },
   { value: '700+', label: 'commits on maha fraxn' },
   { value: '6', label: 'hackathon wins' },
   { value: '22', label: 'languages shipped' },
@@ -23,7 +29,10 @@ const INDEX = [
   { n: '07', text: 'CONTACT', note: 'open to work', href: '/contact' },
 ]
 
-export default function Home() {
+export default async function Home() {
+  const { externalMerged } = await getOssSummary()
+  const STATS = statsFor(externalMerged)
+
   return (
     <main className="mx-auto max-w-5xl px-5">
       {/* ---- Masthead ---- */}
