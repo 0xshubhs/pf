@@ -47,3 +47,7 @@ resume/*.log
 resume/*.out
 resume/*.gf
 resume/missfont.log
+# added by `vercel link` — keeps .env.local (OIDC token) out of git.
+# .env.example is documentation and must stay tracked.
+.env*
+!.env.example
