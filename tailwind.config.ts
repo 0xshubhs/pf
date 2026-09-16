@@ -1,5 +1,4 @@
 import type { Config } from 'tailwindcss'
-import tailwindAnimate from 'tailwindcss-animate'
 
 const config: Config = {
   content: [
@@ -8,42 +7,46 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    // Brutalism has no soft corners. Overriding (not extending) the scale means
+    // any stray `rounded-*` left in the tree renders square instead of leaking
+    // the old glass look back in.
+    borderRadius: {
+      none: '0',
+      sm: '0',
+      DEFAULT: '0',
+      md: '0',
+      lg: '0',
+      xl: '0',
+      '2xl': '0',
+      '3xl': '0',
+      full: '0',
+    },
     extend: {
       colors: {
-        main: '#FD9745',
-        mainAccent: '#fc7303',
-        overlay: 'rgba(0,0,0,0.8)',
-
-        // light mode
-        bg: 'linear-gradient(to bottom, #1a1a1a, #2d2d2d)', // Changed to black gradient
-        text: '#000',
-        border: '#000',
-
-        // dark mode
-        darkBg: '#272933',
-        darkText: '#eeefe9',
-        darkBorder: '#000',
-        secondaryBlack: '#212121',
+        // Every token resolves through a CSS var, so light/dark flips once in
+        // globals.css instead of doubling every className with a dark: variant.
+        paper: 'var(--paper)',
+        surface: 'var(--surface)',
+        ink: 'var(--ink)',
+        'ink-dim': 'var(--ink-dim)',
+        'ink-faint': 'var(--ink-faint)',
+        rule: 'var(--rule)',
+        'rule-soft': 'var(--rule-soft)',
+        accent: 'var(--accent)',
+        'accent-ink': 'var(--accent-ink)',
+        ok: 'var(--ok)',
+        info: 'var(--info)',
       },
-      backgroundImage: {
-        'gradient-bg': 'linear-gradient(to bottom, #1a1a1a, #2d2d2d)', // Add this for proper gradient support
+      borderColor: {
+        DEFAULT: 'var(--rule)',
       },
-      borderRadius: {
-        base: '5px',
+      fontFamily: {
+        // One typeface, everywhere. Terminal brutalism doesn't switch faces.
+        sans: ['var(--font-mono)', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+        mono: ['var(--font-mono)', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
-      boxShadow: {
-        light: '4px 4px 0px 0px #000',
-        dark: '4px 4px 0px 0px #000',
-      },
-      translate: {
-        boxShadowX: '4px',
-        boxShadowY: '4px',
-        reverseBoxShadowX: '-4px',
-        reverseBoxShadowY: '-4px',
-      },
-      fontWeight: {
-        base: '500',
-        heading: '700',
+      letterSpacing: {
+        label: '0.18em',
       },
       screens: {
         w450: { raw: '(max-width: 450px)' },
@@ -51,6 +54,6 @@ const config: Config = {
     },
   },
   darkMode: 'class',
-  plugins: [tailwindAnimate],
+  plugins: [],
 }
 export default config

@@ -1,12 +1,11 @@
-'use client'
-import { useState, useEffect } from 'react'
+import clsx from 'clsx'
 import HACKS from '@/data/hacks'
-import { motion, AnimatePresence } from 'framer-motion'
-import BackgroundScene from '@/components/three/background-scene'
-import TextReveal from '@/components/animations/text-reveal'
-import GlowCard from '@/components/animations/glow-card'
-import Parallax from '@/components/animations/parallax'
-import { ChevronLeft, ChevronRight, ExternalLink, Github, Trophy } from 'lucide-react'
+import { PageHeader } from '@/components/page-header'
+
+// Some entries in hacks.ts omit the leading slash ("hackathons/x.png"), which
+// only resolves correctly while the route has no trailing slash. Pin them to root.
+const toSrc = (src: string) =>
+  src.startsWith('http') || src.startsWith('/') ? src : `/${src}`
 
 interface TeamMember {
   name: string
@@ -26,390 +25,121 @@ interface Hack {
   repoUrl?: string
 }
 
-interface TypingTextProps {
-  text: string
-  delay?: number
-  typingSpeed?: number
-  onComplete?: () => void
-  className?: string
-}
-
-const TypingText: React.FC<TypingTextProps> = ({
-  text,
-  delay = 0,
-  typingSpeed = 100,
-  onComplete,
-  className = "",
-}) => {
-  const [displayText, setDisplayText] = useState('')
-  const [isComplete, setIsComplete] = useState(false)
-  const [started, setStarted] = useState(false)
-
-  useEffect(() => {
-    const timer = setTimeout(() => setStarted(true), delay)
-    return () => clearTimeout(timer)
-  }, [delay])
-
-  useEffect(() => {
-    if (!started || isComplete) return
-
-    let currentIndex = 0
-    const intervalId = setInterval(() => {
-      if (currentIndex <= text.length) {
-        setDisplayText(text.slice(0, currentIndex))
-        currentIndex++
-      } else {
-        clearInterval(intervalId)
-        setIsComplete(true)
-        onComplete?.()
-      }
-    }, typingSpeed)
-
-    return () => clearInterval(intervalId)
-  }, [text, started, onComplete, isComplete, typingSpeed])
+const HackEntry = ({ hack, n }: { hack: Hack; n: string }) => {
+  // No carousel, no autoplay, no arrows. Every shot is just on the page.
+  const images = [hack.previewImage, hack.dashboardImage, hack.projectImage].filter(
+    Boolean
+  ) as string[]
 
   return (
-    <div className={`xs:min-h-[24px] min-h-[20px] ${className}`}>
-      {isComplete ? (
-        <span>{text}</span>
-      ) : (
-        <span>{displayText}<span className="animate-pulse">|</span></span>
+    <article className="border-b border-rule py-8">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <h2 className="text-xl font-bold md:text-2xl">
+          <span className="b-faint mr-3 text-sm">{n}</span>
+          {hack.projectName}
+        </h2>
+        <p className="b-label">{hack.name}</p>
+      </div>
+
+      <p className="mt-3 max-w-2xl text-base leading-relaxed">{hack.description}</p>
+
+      {hack.prizes && hack.prizes.length > 0 && (
+        <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-1">
+          {hack.prizes.map((prize) => (
+            // A win is a fact worth shouting — one of the few accent uses.
+            <li key={prize} className="text-sm text-accent">
+              {prize}
+            </li>
+          ))}
+        </ul>
       )}
-    </div>
-  )
-}
 
-const HackathonCard: React.FC<{ hack: Hack; index: number; isVisible?: boolean }> = ({
-  hack,
-  index,
-  isVisible = true,
-}) => {
-  const images = [
-    hack.previewImage,
-    hack.dashboardImage,
-    hack.projectImage,
-  ].filter(Boolean) as string[]
-  
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const [isHovered, setIsHovered] = useState(false)
-  const [autoplay, setAutoplay] = useState(true)
-  const [imageLoaded, setImageLoaded] = useState(false)
-  
-  // Handle image carousel
-  useEffect(() => {
-    let intervalId: NodeJS.Timeout | null = null;
-    
-    if (autoplay && images.length > 1 && !isHovered) {
-      intervalId = setInterval(() => {
-        setCurrentImageIndex((prev) => (prev + 1) % images.length);
-      }, 4000);
-    }
-    
-    return () => {
-      if (intervalId) clearInterval(intervalId);
-    };
-  }, [autoplay, images.length, isHovered]);
-  
-  const nextImage = () => {
-    setAutoplay(false);
-    setCurrentImageIndex((prev) => (prev + 1) % images.length);
-  };
-  
-  const prevImage = () => {
-    setAutoplay(false);
-    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
-  };
-  
-  // Reset image loaded state when image changes
-  useEffect(() => {
-    setImageLoaded(false);
-  }, [currentImageIndex]);
-
-  return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 + 0.2 }}
-      className="glass-panel p-5"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* Image carousel */}
-        {images.length > 0 && (
-          <div className="md:w-2/5 relative group">
-            <div className="relative w-full overflow-hidden rounded-lg border-2 border-border shadow-light dark:border-darkBorder dark:shadow-dark">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentImageIndex}
-                  initial={{ opacity: 0.5 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0.5 }}
-                  transition={{ duration: 0.5 }}
-                  className="w-full min-h-[200px] flex items-center justify-center bg-gray-900/30 backdrop-blur-sm relative"
-                >
-                  {!imageLoaded && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-orange-400"></div>
-                    </div>
-                  )}
-                  <img
-                    className="max-w-full max-h-[400px] object-contain p-2"
-                    src={images[currentImageIndex]}
-                    alt={`${hack.name} - ${hack.projectName}`}
-                    onLoad={(e) => {
-                      // Set image as loaded
-                      setImageLoaded(true);
-                    }}
-                    style={{
-                      opacity: imageLoaded ? 1 : 0,
-                      transition: 'opacity 0.3s ease-in-out'
-                    }}
-                  />
-                </motion.div>
-              </AnimatePresence>
-              
-              {/* Image indicators */}
-              {images.length > 1 && (
-                <div className="absolute bottom-3 left-0 right-0 flex justify-center space-x-2">
-                  {images.map((_, idx) => (
-                    <button
-                      key={idx}
-                      className={`w-2.5 h-2.5 rounded-full transition-all ${
-                        idx === currentImageIndex ? 'bg-orange-400 scale-125' : 'bg-gray-400 opacity-70'
-                      }`}
-                      onClick={() => {
-                        setAutoplay(false);
-                        setCurrentImageIndex(idx);
-                      }}
-                    />
-                  ))}
-                </div>
-              )}
-              
-              {/* Navigation arrows */}
-              {images.length > 1 && (
-                <>
-                  <button
-                    onClick={prevImage}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-80 transition-opacity"
-                  >
-                    <ChevronLeft size={20} />
-                  </button>
-                  <button
-                    onClick={nextImage}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-80 transition-opacity"
-                  >
-                    <ChevronRight size={20} />
-                  </button>
-                </>
-              )}
+      {images.length > 0 && (
+        // Column count follows the image count so a hack with one shot never
+        // leaves empty tracks showing the grid's ink background as black cells.
+        <div
+          className={clsx(
+            'b-grid mt-6',
+            // A lone GitHub OG card at full column width swamps the entry.
+            images.length === 1 && 'sm:max-w-xl',
+            images.length === 2 && 'sm:grid-cols-2',
+            images.length >= 3 && 'sm:grid-cols-2 lg:grid-cols-3'
+          )}
+        >
+          {images.map((src) => (
+            // These range from 2:1 GitHub OG cards to square logos to wide
+            // dashboard screenshots, so each sits contained in a fixed cell
+            // rather than cropped to fill it.
+            <div
+              key={src}
+              className="flex aspect-video items-center justify-center bg-surface p-2"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={toSrc(src)}
+                alt={`${hack.projectName} screenshot`}
+                loading="lazy"
+                className="max-h-full max-w-full object-contain"
+              />
             </div>
-          </div>
-        )}
+          ))}
+        </div>
+      )}
 
-        {/* Content */}
-        <div className="md:w-3/5 flex flex-col justify-between">
-          <div>
-            <h2 className="text-xl font-heading font-bold sm:text-2xl text-gray-900 dark:text-white">
-              <span className="text-orange-600 dark:text-orange-400">{hack.name}</span> - {hack.projectName}
-            </h2>
-
-            <p className="mt-3 text-gray-700 dark:text-gray-300 leading-relaxed">{hack.description}</p>
-
-            {/* Team section */}
-            <div className="mt-4">
-              <h3 className="font-medium text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400">Team Members</h3>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {hack.team.map((member) => (
-                  <a
-                    key={member.name}
-                    href={member.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-md border border-black/10 bg-black/5 px-3 py-1.5 text-sm text-gray-700 dark:border-white/15 dark:bg-white/5 dark:text-gray-200 transition-all hover:bg-orange-400/15 hover:border-orange-400/40 hover:text-gray-900 dark:hover:text-white flex items-center gap-1.5"
-                  >
-                    {member.name}
-                    <ExternalLink size={12} />
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            {/* Prizes section */}
-            {hack.prizes && hack.prizes.length > 0 && (
-              <div className="mt-4">
-                <h3 className="font-medium text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400">Achievements</h3>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {hack.prizes.map((prize) => (
-                    <span
-                      key={prize}
-                      className="rounded-md border border-orange-400/30 bg-orange-400/10 px-3 py-1.5 text-sm text-orange-700 dark:text-orange-300 flex items-center gap-1.5"
-                    >
-                      <Trophy size={14} />
-                      {prize}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Action buttons */}
-          <div className="mt-6 flex gap-4">
-            {hack.liveLink && (
-              <a
-                className="flex items-center justify-center gap-2 rounded-md border border-black/10 bg-black/5 px-4 py-2 text-center text-sm font-semibold text-gray-800 dark:border-white/15 dark:bg-white/10 dark:text-gray-100 transition-all hover:translate-y-[-2px] hover:bg-orange-500 hover:border-orange-500 hover:text-white flex-1"
-                href={hack.liveLink}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <ExternalLink size={16} />
-                View Project
-              </a>
-            )}
-            {hack.repoUrl && (
-              <a
-                className="flex items-center justify-center gap-2 rounded-md border border-black/10 bg-black/5 px-4 py-2 text-center text-sm font-semibold text-gray-800 dark:border-white/15 dark:bg-white/10 dark:text-gray-100 transition-all hover:translate-y-[-2px] hover:bg-black/10 hover:text-gray-900 dark:hover:bg-white/20 dark:hover:border-white/30 dark:hover:text-white flex-1"
-                href={hack.repoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Github size={16} />
-                Source Code
-              </a>
-            )}
-          </div>
+      <div className="mt-6 grid gap-4 md:grid-cols-[9rem_1fr]">
+        <p className="b-label pt-1">team</p>
+        <div className="flex flex-wrap gap-x-4 gap-y-1">
+          {hack.team.map((member) => (
+            <a
+              key={member.name}
+              href={member.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="b-link text-sm"
+            >
+              {member.name}
+            </a>
+          ))}
         </div>
       </div>
-    </motion.div>
+
+      {(hack.liveLink || hack.repoUrl) && (
+        <div className="mt-5 flex flex-wrap gap-2">
+          {hack.liveLink && (
+            <a href={hack.liveLink} target="_blank" rel="noopener noreferrer" className="b-btn">
+              View project
+            </a>
+          )}
+          {hack.repoUrl && (
+            <a href={hack.repoUrl} target="_blank" rel="noopener noreferrer" className="b-btn">
+              Source
+            </a>
+          )}
+        </div>
+      )}
+    </article>
   )
 }
 
-// Filter component for hackathon filtering
-const HackathonFilter: React.FC<{
-  filters: string[];
-  activeFilter: string;
-  setActiveFilter: (filter: string) => void;
-}> = ({ filters, activeFilter, setActiveFilter }) => {
-  return (
-    <div className="flex flex-wrap gap-2 justify-center mb-8">
-      {filters.map((filter) => (
-        <button
-          key={filter}
-          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-            activeFilter === filter
-              ? 'bg-orange-400 text-white shadow-md'
-              : 'border border-black/10 bg-black/5 text-gray-700 hover:bg-black/10 hover:text-gray-900 dark:border-white/15 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/20 dark:hover:text-white'
-          }`}
-          onClick={() => setActiveFilter(filter)}
-        >
-          {filter}
-        </button>
-      ))}
-    </div>
-  );
-};
-
 export default function Hacks() {
-  const [isTypingComplete, setIsTypingComplete] = useState(false)
-  const [activeFilter, setActiveFilter] = useState("All")
-  const [visibleHacks, setVisibleHacks] = useState<Hack[]>(HACKS)
-  const [isPageLoaded, setIsPageLoaded] = useState(false)
-  
-  // Get unique hackathon types for filters
-  const hackTypes = ["All", ...Array.from(new Set(HACKS.map(hack => hack.name.split(" ")[0])))]
-  
-  // Set page as loaded after a small delay for smoother entry animations
-  useEffect(() => {
-    const timer = setTimeout(() => setIsPageLoaded(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
-  
-  useEffect(() => {
-    if (activeFilter === "All") {
-      setVisibleHacks(HACKS);
-    } else {
-      setVisibleHacks(HACKS.filter(hack => hack.name.includes(activeFilter)));
-    }
-  }, [activeFilter]);
-
-  const introText =
-    '48 hours, one idea, no sleep — that\u0027s where the best stuff gets built.'
-
   return (
-    <div className="min-h-screen bg-bg">
-      <BackgroundScene scene="hacks" />
-      <div className="container mx-auto px-6 py-16 pt-28 max-w-4xl">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: isPageLoaded ? 1 : 0, y: isPageLoaded ? 0 : 20 }}
-          transition={{ duration: 0.8 }}
-          className="flex flex-col justify-center space-y-4 text-center max-w-3xl mx-auto"
-        >
-          <div className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 dark:text-white">
-            <TextReveal
-              text="Hackathon Journey"
-              mode="words"
-              as="h1"
-              className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-orange-500 to-orange-700 dark:from-orange-400 dark:to-orange-600 bg-clip-text text-transparent justify-center"
-            />
-          </div>
-          
-          <Parallax speed={0.1}>
-            <div className="relative pb-4">
-              <TypingText
-                text={introText}
-                delay={300}
-                typingSpeed={80}
-                onComplete={() => setIsTypingComplete(true)}
-                className="text-sm md:text-base lg:text-lg text-gray-700 dark:text-gray-300 leading-relaxed"
-              />
-              <div className="absolute -z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl"></div>
-            </div>
-          </Parallax>
-        </motion.div>
+    <main className="mx-auto max-w-5xl px-5 py-10 md:py-14">
+      <PageHeader label="03 / hackathons" title="Hackathons">
+        48 hours, one idea, no sleep — that&apos;s where the best stuff gets built.
+        Six paid wins and counting.
+      </PageHeader>
 
-        {/* Filters */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="mt-12"
-        >
-          <HackathonFilter 
-            filters={hackTypes} 
-            activeFilter={activeFilter} 
-            setActiveFilter={setActiveFilter} 
+      <div>
+        {HACKS.map((hack, i) => (
+          // Two entries share a hackathon name (SoSoValue Buildathon), so the
+          // project name has to be part of the key.
+          <HackEntry
+            key={`${hack.name}-${hack.projectName}`}
+            hack={hack}
+            n={String(i).padStart(2, '0')}
           />
-        </motion.div>
-
-        {/* Hackathon cards */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="mt-8 flex flex-col gap-8"
-        >
-          <AnimatePresence>
-            {visibleHacks.map((hack, id) => (
-              <GlowCard key={hack.name}>
-                <HackathonCard hack={hack} index={id} />
-              </GlowCard>
-            ))}
-          </AnimatePresence>
-          
-          {visibleHacks.length === 0 && (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center py-16 text-gray-400"
-            >
-              No hackathons found for this filter. Try another category.
-            </motion.div>
-          )}
-        </motion.div>
+        ))}
       </div>
-    </div>
+    </main>
   )
 }

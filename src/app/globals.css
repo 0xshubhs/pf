@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 * {
   padding: 0;
   margin: 0;
@@ -11,6 +10,14 @@
 
 /* Keep the native color-scheme in sync with our class-based theme so browsers
    (notably Brave with Auto Dark) don't force-darken backgrounds against us. */
+/* `clip` rather than `hidden`: both stop a long unbroken URL forcing a
+   horizontal scrollbar, but `hidden` makes the element a scroll container,
+   which moves the snapshot containing block that the view-transition
+   pseudo-elements resolve their clip-path coordinates against. */
+html {
+  overflow-x: clip;
+}
+
 html:not(.dark) {
   color-scheme: light;
 }
@@ -18,429 +25,378 @@ html.dark {
   color-scheme: dark;
 }
 
-html.lenis,
-html.lenis body {
-  height: auto;
-}
+/* ============================================================
+   TERMINAL BRUTALISM — design tokens
+   Monochrome by default. Orange is reserved for STATE only:
+   current page, hover, focus, live/active data. Never decoration.
 
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
+   Every value below clears WCAG AA (4.5:1) against its own --paper,
+   because the accent and the dim/faint inks are all used at 10-13px.
+   The light accent is a deep burnt orange rather than the old #FD9745
+   (3.4:1 on white) so it works both as text and as a fill with white on it.
+   ============================================================ */
 
-/* Respect OS-level reduced-motion: collapse every CSS animation/transition.
-   Framer Motion is governed separately via <MotionConfig reducedMotion="user">,
-   and Lenis/Three scenes bail out in their own components. */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-body {
-  @apply dark:bg-darkBg bg-bg;
-}
-
-/* Typography: Inter for reading, Montserrat kept for display headings */
-h1,
-h2,
-h3 {
-  font-family: var(--font-montserrat), var(--font-inter), sans-serif;
-  letter-spacing: -0.01em;
-}
-
-/* Scrollbar - Light mode */
-body {
-  --sb-track-color: #f5f5f5;
-  --sb-thumb-color: #c0c0c0;
-}
-
-/* Scrollbar - Dark mode */
-.dark body,
-body.dark {
-  --sb-track-color: #1a1a2e;
-  --sb-thumb-color: #444;
+:root {
+  --paper: #ffffff;
+  --surface: #f2f2f0;
+  --ink: #0a0a0a;
+  --ink-dim: #565656;
+  --ink-faint: #767676;
+  --rule: #0a0a0a;
+  --rule-soft: #d6d6d2;
+  --accent: #b04a05;
+  --accent-ink: #ffffff;
+  --ok: #1a7f46;
+  --info: #1d4ed8;
+  --dot: #bdbdb4;
 }
 
 :root.dark {
-  --sb-track-color: #1a1a2e;
-  --sb-thumb-color: #444;
+  --paper: #0a0a0a;
+  --surface: #141414;
+  --ink: #ededed;
+  --ink-dim: #9a9a9a;
+  --ink-faint: #8a8a8a;
+  --rule: #ededed;
+  --rule-soft: #2e2e2e;
+  --accent: #fd9745;
+  --accent-ink: #0a0a0a;
+  --ok: #4ade80;
+  --info: #7dd3fc;
+  --dot: #383838;
 }
 
+body {
+  /* Engineering-pad dot grid. Fatter 1.5px dots on a tighter 22px pitch so
+     the paper actually reads as ruled, not as a rendering artefact.
+     Opaque surfaces (.b-box, .b-grid cells, nav) sit on top and mask it. */
+  background-color: var(--paper);
+  background-image: radial-gradient(var(--dot) 1.5px, transparent 1.5px);
+  background-size: 22px 22px;
+  background-position: -1px -1px;
+  color: var(--ink);
+
+  font-feature-settings: 'liga' 0, 'calt' 0; /* no ligatures — raw glyphs */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The only motion in the design is the nav's hover wipe (.nav-link below).
+   Everything else flips instantly. Scroll is never smooth-hijacked. */
+html {
+  scroll-behavior: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-link::before {
+    transition: none !important;
+  }
+}
+
+/* --- Theme droplet ------------------------------------------------------ */
+/* The incoming theme is revealed by a circle growing from the toggle label.
+   Geometry arrives as --vt-x/y/r on :root and is inherited into this pseudo
+   tree. Running it as a CSS animation (rather than JS after transition.ready)
+   means it starts on the transition's first frame, with no unclipped flash. */
+
+/* The UA also animates the GROUP (a 250ms size/position morph). Old and new are
+   identical in size here, so it can only add jitter — switch it off. */
+::view-transition-group(root) {
+  animation: none;
+}
+
+::view-transition-old(root) {
+  animation: none;
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  /* Two stages, both linear — the shape of the motion lives in the keyframe
+     stops, not an easing curve (every easing is wrong at one end: ease-in lags
+     on the button, ease-out crawls into the far corner). */
+  animation: theme-droplet 620ms linear forwards;
+  mix-blend-mode: normal;
+  z-index: 2;
+}
+
+@keyframes theme-droplet {
+  /* Stage 1 (0-28%): a slow bloom out to roughly the size of the label, so you
+     actually SEE the droplet form on the [dark]/[light] text. */
+  0% {
+    clip-path: circle(0px at var(--vt-x, 100%) var(--vt-y, 0px));
+  }
+  28% {
+    clip-path: circle(var(--vt-r0, 30px) at var(--vt-x, 100%) var(--vt-y, 0px));
+  }
+  /* Stage 2 (28-100%): sweeps across the page at a single steady speed. */
+  100% {
+    clip-path: circle(var(--vt-r, 150vmax) at var(--vt-x, 100%) var(--vt-y, 0px));
+  }
+}
+
+/* --- Typography -------------------------------------------------------- */
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+
+/* --- Selection & focus ------------------------------------------------- */
+
+::selection {
+  background-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* --- Scrollbar: square, no thumb radius -------------------------------- */
+
 body::-webkit-scrollbar {
-  width: 10px;
+  width: 12px;
 }
 
 body::-webkit-scrollbar-track {
-  background: var(--sb-track-color);
+  background: var(--paper);
+  border-left: 1px solid var(--rule-soft);
 }
 
 body::-webkit-scrollbar-thumb {
-  background: var(--sb-thumb-color);
-  border-radius: 5px;
+  background: var(--ink);
 }
 
 body::-webkit-scrollbar-thumb:hover {
-  background: #fb933d;
+  background: var(--accent);
 }
 
 @supports not selector(::-webkit-scrollbar) {
   body {
-    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+    scrollbar-color: var(--ink) var(--paper);
   }
 }
 
-/* Cursor blink animation */
-@keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
+/* ============================================================
+   COMPONENT PRIMITIVES
+   Declared in @layer components so a Tailwind utility in the markup always
+   wins over the primitive it sits next to — otherwise these rules, being
+   later in the file than @tailwind utilities, would silently beat them.
+   ============================================================ */
 
-.animate-blink {
-  animation: blink 1s infinite;
-}
+@layer components {
+  /* Bordered box. The whole system is boxes and rules — no shadow, no radius. */
+  .b-box {
+    border: 1px solid var(--rule);
+    background: var(--paper);
+  }
 
-/* Selection color */
-::selection {
-  background-color: rgba(251, 147, 61, 0.3);
-  color: inherit;
-}
+  /* Interactive box: hover inverts to solid ink. That inversion IS the
+     affordance — it replaces every shadow, glow and lift we deleted. */
+  .b-box-link {
+    border: 1px solid var(--rule);
+    background: var(--paper);
+  }
 
-/* ============ Liquid Glass Design System ============ */
-/* Inspired by Apple's Liquid Glass (WWDC 2025)        */
+  .b-box-link:hover {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
 
-:root {
-  /* Base glass surfaces — white-tinted (light mode bg is dark #1a1a1a) */
-  --glass-bg: rgba(255, 255, 255, 0.06);
-  --glass-bg-hover: rgba(255, 255, 255, 0.1);
-  --glass-bg-active: rgba(255, 255, 255, 0.16);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-highlight: rgba(255, 255, 255, 0.6);
-  --glass-shadow: rgba(0, 0, 0, 0.25);
-  --glass-glow: rgba(253, 151, 69, 0.25);
-  --glass-glow-strong: rgba(253, 151, 69, 0.4);
-  --glass-nav-bg: rgba(255, 255, 255, 0.04);
-  --glass-nav-border: rgba(255, 255, 255, 0.08);
-  --glass-sidebar-bg: rgba(30, 30, 30, 0.85);
+  .b-box-link:hover .b-dim,
+  .b-box-link:hover .b-faint {
+    color: var(--paper);
+  }
 
-  /* Liquid Glass optical layers (light mode — strong, bg is dark) */
-  --glass-refract-top: rgba(255, 255, 255, 0.5);
-  --glass-refract-bottom: rgba(0, 0, 0, 0.08);
-  --glass-edge-top: rgba(255, 255, 255, 0.65);
-  --glass-edge-side: rgba(255, 255, 255, 0.3);
-  --glass-edge-bottom: rgba(255, 255, 255, 0.15);
-  --glass-edge-ring: rgba(255, 255, 255, 0.25);
-  --glass-inner-glow: rgba(255, 255, 255, 0.18);
-  --glass-volume: rgba(255, 255, 255, 0.1);
-  --glass-brightness: 1.15;
+  /* Tiny uppercase tracked label — the system's "field name" voice. */
+  .b-label {
+    font-size: 11px;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-dim);
+  }
 
-  /* Content card glass — light theme: frosted white over light surfaces */
-  --glass-panel-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.55) 100%);
-  --glass-panel-border: rgba(0, 0, 0, 0.08);
-  --glass-panel-inset: rgba(255, 255, 255, 0.85);
-  --glass-panel-shadow: rgba(100, 100, 111, 0.12);
-}
+  .b-dim {
+    color: var(--ink-dim);
+  }
 
-:root.dark {
-  --glass-bg: rgba(255, 255, 255, 0.04);
-  --glass-bg-hover: rgba(255, 255, 255, 0.08);
-  --glass-bg-active: rgba(255, 255, 255, 0.14);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-highlight: rgba(255, 255, 255, 0.12);
-  --glass-shadow: rgba(0, 0, 0, 0.35);
-  --glass-glow: rgba(253, 151, 69, 0.18);
-  --glass-glow-strong: rgba(253, 151, 69, 0.3);
-  --glass-nav-bg: rgba(255, 255, 255, 0.03);
-  --glass-nav-border: rgba(255, 255, 255, 0.05);
-  --glass-sidebar-bg: rgba(39, 41, 51, 0.88);
+  .b-faint {
+    color: var(--ink-faint);
+  }
 
-  /* Liquid Glass optical layers (dark mode) */
-  --glass-refract-top: rgba(255, 255, 255, 0.12);
-  --glass-refract-bottom: rgba(0, 0, 0, 0.15);
-  --glass-edge-top: rgba(255, 255, 255, 0.22);
-  --glass-edge-side: rgba(255, 255, 255, 0.08);
-  --glass-edge-bottom: rgba(255, 255, 255, 0.04);
-  --glass-edge-ring: rgba(255, 255, 255, 0.06);
-  --glass-inner-glow: rgba(255, 255, 255, 0.05);
-  --glass-volume: rgba(255, 255, 255, 0.03);
-  --glass-brightness: 1.04;
+  /* Inline tag / chip — square, hairline, no fill. */
+  .b-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    border: 1px solid var(--rule-soft);
+    padding: 0.2rem 0.55rem;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--ink-dim);
+    white-space: nowrap;
+  }
 
-  /* Content card glass — dark theme: white-tinted translucent */
-  --glass-panel-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.04) 100%);
-  --glass-panel-border: rgba(255, 255, 255, 0.08);
-  --glass-panel-inset: rgba(255, 255, 255, 0.14);
-  --glass-panel-shadow: rgba(0, 0, 0, 0.35);
-}
+  /* Primary action: solid accent, since it IS a state (the thing to do next). */
+  .b-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid var(--rule);
+    padding: 0.6rem 1.1rem;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    background: var(--paper);
+    color: var(--ink);
+  }
 
-/* --- Liquid Glass Nav Container --- */
-.liquid-glass-nav {
-  background: var(--glass-nav-bg);
-  border: 1px solid var(--glass-nav-border);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  backdrop-filter: blur(24px) saturate(180%);
-  box-shadow:
-    0 8px 32px var(--glass-shadow),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
-  position: relative;
-  overflow: hidden;
-}
+  .b-btn:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
 
-/* Top-edge caustic highlight */
-.liquid-glass-nav::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 10%;
-  right: 10%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent);
-  pointer-events: none;
-  z-index: 1;
-}
+  .b-btn-accent {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
 
-/* Mouse-tracking specular highlight on nav container */
-.liquid-glass-nav::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(
-    circle 140px at var(--nav-x, 50%) var(--nav-y, 50%),
-    var(--glass-highlight) 0%,
-    transparent 70%
-  );
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-  z-index: 0;
-}
+  .b-btn-accent:hover {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
 
-.liquid-glass-nav:hover::after {
-  opacity: 0.5;
-}
+  /* Nav link: an ink slab grows out from the centre of the label on hover and
+     the text knocks out to paper. Transform-only, so it runs on the
+     compositor and never triggers layout. */
+  .nav-link {
+    position: relative;
+    isolation: isolate;
+  }
 
-/* --- Sliding Glass Pill — layered liquid glass optics --- */
-.liquid-glass-slider {
-  position: absolute;
-  border-radius: 14px;
+  .nav-link::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: center;
+    /* ease-out so it snaps open fast then settles — reads deliberate, not floaty */
+    transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+  }
 
-  /* Refraction gradient — bright top (light entering), dim bottom (light exiting) */
-  background:
-    linear-gradient(
-      180deg,
-      var(--glass-refract-top) 0%,
-      transparent 50%,
-      var(--glass-refract-bottom) 100%
+  .nav-link:hover::before {
+    transform: scaleX(1);
+  }
+
+  .nav-link:hover {
+    color: var(--paper);
+  }
+
+  /* The current page keeps its accent + brackets — no wipe, so "where I am"
+     never reads the same as "what I'm pointing at". */
+  .nav-link[aria-current='page']:hover {
+    color: var(--accent);
+  }
+
+  .nav-link[aria-current='page']::before {
+    display: none;
+  }
+
+  /* Text link: underline is always on — this is a document, not an app. */
+  .b-link {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+
+  .b-link:hover {
+    color: var(--accent);
+  }
+
+  /* Striped fill for "dead space" blocks — reads as raw material, not a gradient. */
+  .b-hatch {
+    background-image: repeating-linear-gradient(
+      45deg,
+      var(--rule-soft),
+      var(--rule-soft) 1px,
+      transparent 1px,
+      transparent 7px
     );
-
-  border: 1px solid var(--glass-edge-ring);
-
-  /* Glass optics: blur + color boost + light concentration */
-  -webkit-backdrop-filter: blur(24px) saturate(200%) brightness(var(--glass-brightness));
-  backdrop-filter: blur(24px) saturate(200%) brightness(var(--glass-brightness));
-
-  /* 3D depth — 8 shadow layers simulating a physical glass object */
-  box-shadow:
-    /* Outer drop shadows for elevation */
-    0 8px 32px var(--glass-shadow),
-    0 2px 6px var(--glass-shadow),
-    /* Top edge — brightest, light source above */
-    inset 0 1.5px 0 var(--glass-edge-top),
-    /* Side edges — medium catch light */
-    inset 1px 0 0 var(--glass-edge-side),
-    inset -1px 0 0 var(--glass-edge-side),
-    /* Bottom edge — faint reflected light */
-    inset 0 -1px 0 var(--glass-edge-bottom),
-    /* Inner volumetric glow — glass thickness */
-    inset 0 6px 20px var(--glass-volume),
-    /* Accent glow halo */
-    0 0 24px var(--glass-glow);
-
-  pointer-events: none;
-  z-index: 0;
-  overflow: hidden;
-}
-
-/* Inner refraction layer — light path through curved glass */
-.liquid-glass-slider::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background:
-    /* Top highlight band */
-    linear-gradient(
-      180deg,
-      var(--glass-refract-top) 0%,
-      rgba(255, 255, 255, 0.06) 30%,
-      transparent 50%,
-      rgba(255, 255, 255, 0.04) 75%,
-      var(--glass-edge-bottom) 100%
-    ),
-    /* Radial center glow */
-    radial-gradient(
-      ellipse 70% 40% at 50% 15%,
-      var(--glass-inner-glow) 0%,
-      transparent 100%
-    );
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* 4-sided specular flares — light catching all edges of the glass */
-.liquid-glass-slider::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  /* Inner perimeter glow ring */
-  box-shadow: inset 0 0 0 0.5px var(--glass-edge-ring);
-  background:
-    /* Top flare — strongest (primary light source above) */
-    radial-gradient(
-      ellipse 60% 30% at 50% 0%,
-      var(--glass-edge-top) 0%,
-      transparent 100%
-    ),
-    /* Bottom flare — reflected light from surface below */
-    radial-gradient(
-      ellipse 60% 30% at 50% 100%,
-      var(--glass-edge-bottom) 0%,
-      transparent 100%
-    ),
-    /* Left flare — side catch light */
-    radial-gradient(
-      ellipse 20% 50% at 0% 50%,
-      var(--glass-edge-side) 0%,
-      transparent 100%
-    ),
-    /* Right flare — side catch light */
-    radial-gradient(
-      ellipse 20% 50% at 100% 50%,
-      var(--glass-edge-side) 0%,
-      transparent 100%
-    );
-  pointer-events: none;
-  z-index: 2;
-}
-
-/* --- Glass Panel (content cards) --- */
-/* Readable glass surface for hacks / audits / projects cards. */
-/* Both themes sit on dark page backgrounds, so panels are white-tinted glass. */
-.glass-panel {
-  position: relative;
-  border-radius: 16px;
-  background: var(--glass-panel-bg);
-  border: 1px solid var(--glass-panel-border);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  backdrop-filter: blur(20px) saturate(160%);
-  box-shadow:
-    0 8px 32px var(--glass-panel-shadow),
-    inset 0 1px 0 var(--glass-panel-inset),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.04);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Top-edge caustic highlight, same as the nav */
-.glass-panel::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 8%;
-  right: 8%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent);
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-.glass-panel:hover {
-  border-color: rgba(253, 151, 69, 0.25);
-  box-shadow:
-    0 12px 40px var(--glass-panel-shadow),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18),
-    0 0 28px var(--glass-glow);
-}
-
-/* Aave-style refraction: displacement-map lens on the nav droplet. */
-/* Enabled by <GlassLens /> only on engines that honor url() backdrop-filters. */
-:root.glass-refract-on .liquid-glass-slider {
-  -webkit-backdrop-filter: url(#glass-lens) blur(5px) saturate(200%) brightness(var(--glass-brightness));
-  backdrop-filter: url(#glass-lens) blur(5px) saturate(200%) brightness(var(--glass-brightness));
-}
-
-/* --- Glass Pill (theme switcher) --- */
-.liquid-glass-pill {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  -webkit-backdrop-filter: blur(12px) saturate(150%);
-  backdrop-filter: blur(12px) saturate(150%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  transition: all 0.3s ease;
-}
-
-.liquid-glass-pill:hover {
-  background: var(--glass-bg-hover);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.15),
-    0 0 15px var(--glass-glow);
-}
-
-/* --- Mobile Sidebar Glass --- */
-.liquid-glass-sidebar {
-  background: var(--glass-sidebar-bg);
-  -webkit-backdrop-filter: blur(40px) saturate(200%);
-  backdrop-filter: blur(40px) saturate(200%);
-  border-left: 1px solid var(--glass-border);
-  box-shadow: -8px 0 40px var(--glass-shadow);
-}
-
-/* --- Mobile Link Glass --- */
-.liquid-glass-mobile-link {
-  border: 1px solid transparent;
-  transition: all 0.3s ease;
-}
-
-.liquid-glass-mobile-link:hover {
-  background: var(--glass-bg-hover);
-  border-color: var(--glass-border);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.15),
-    0 4px 16px var(--glass-shadow);
-}
-
-.liquid-glass-mobile-active {
-  background: rgba(253, 151, 69, 0.12) !important;
-  border-color: rgba(253, 151, 69, 0.2) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.15),
-    0 0 20px rgba(253, 151, 69, 0.15) !important;
-}
-
-/* --- Interaction Illumination --- */
-/* Simulates Apple's "light that travels across the material on interaction" */
-@keyframes glass-illuminate {
-  0% {
-    box-shadow:
-      0 0 0 transparent,
-      inset 0 0 0 transparent;
   }
-  40% {
-    box-shadow:
-      0 4px 24px var(--glass-shadow),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3),
-      0 0 35px var(--glass-glow-strong);
+
+  /* Hairline grid: 1px gaps over an ink background make every cell edge a rule
+     without doubling borders where cells meet. */
+  .b-grid {
+    display: grid;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
   }
-  100% {
-    box-shadow:
-      0 4px 20px var(--glass-shadow),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2),
-      0 0 20px var(--glass-glow);
+
+  .b-grid > * {
+    background: var(--paper);
+  }
+
+  /* --- Display type ------------------------------------------------------ */
+  /* Impact comes from scale and contrast, not motion. These clamp with the
+     viewport so headlines stay edge-to-edge without a media-query staircase. */
+
+  .b-display {
+    /* Min is sized so the longest line ("SHUBHAM", 7 mono chars at 0.6em
+       advance) still clears a 320px viewport with its 20px gutters. */
+    font-size: clamp(2.25rem, 12vw, 8rem);
+    line-height: 0.86;
+    letter-spacing: -0.05em;
+    font-weight: 700;
+    text-transform: uppercase;
+    overflow-wrap: break-word;
+  }
+
+  .b-title {
+    font-size: clamp(1.75rem, 6.5vw, 3.75rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    font-weight: 700;
+    text-transform: uppercase;
+    overflow-wrap: break-word;
+  }
+
+  /* --- Inverted block ---------------------------------------------------- */
+  /* A solid slab of ink (or accent) is the loudest thing the system can do.
+     Used sparingly: one per page, at most. */
+
+  .b-invert {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+
+  .b-invert .b-dim,
+  .b-invert .b-faint,
+  .b-invert .b-label {
+    color: var(--paper);
+    opacity: 0.65;
+  }
+
+  .b-accent {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: var(--accent);
+  }
+
+  .b-accent .b-label {
+    color: var(--accent-ink);
+    opacity: 0.75;
   }
 }
-

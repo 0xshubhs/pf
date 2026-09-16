@@ -1,22 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-    domains: [],
-  },
-  webpack: (config) => {
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      fs: false,
-    };
-    return config;
-  },
-  turbopack: {
-    resolve: {
-      fallback: {
-        fs: false,
-      },
-    },
-  },
+  // The `fs: false` webpack/turbopack fallbacks here only existed to keep
+  // three.js's node polyfills out of the browser bundle. Nothing pulls them now.
 }
 
-export default nextConfig;
+export default nextConfig

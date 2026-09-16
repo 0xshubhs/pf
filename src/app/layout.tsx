@@ -1,11 +1,16 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter, Montserrat } from 'next/font/google'
+import { JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import ClientShell from '@/components/client-shell'
 import './assets/favicon.ico'
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
-const montserrat = Montserrat({ subsets: ['latin'], variable: '--font-montserrat' })
+// One face for the whole site. 400 for body, 500 for labels, 700 for headings.
+const mono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '700'],
+  variable: '--font-mono',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.0xshubhs.com'),
@@ -33,13 +38,13 @@ export const metadata: Metadata = {
     description:
       'FHE & ZK privacy engineering, custom EVM chains, and smart-contract security research.',
   },
-};
+}
 
 // Declaring both schemes opts the page out of Chromium/Brave "Auto Dark Mode",
 // which otherwise force-darkens backgrounds and ignores our own theme toggle.
 export const viewport: Viewport = {
   colorScheme: 'light dark',
-};
+}
 
 export default function RootLayout({
   children,
@@ -48,7 +53,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${montserrat.variable} ${inter.className}`}>
+      <body className={`${mono.variable} font-mono antialiased`}>
         <ClientShell>{children}</ClientShell>
       </body>
     </html>

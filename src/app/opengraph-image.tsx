@@ -6,6 +6,8 @@ export const alt = 'Shubham Tiwari — Blockchain Engineer & Security Researcher
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
+const RULE = '2px solid #0a0a0a'
+
 export default function OgImage() {
   return new ImageResponse(
     (
@@ -15,64 +17,95 @@ export default function OgImage() {
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center',
-          padding: '80px',
-          background: 'linear-gradient(135deg, #121218 0%, #1a1a24 60%, #241a14 100%)',
-          color: 'white',
-          fontFamily: 'sans-serif',
+          background: '#ffffff',
+          color: '#0a0a0a',
+          fontFamily: 'monospace',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            borderBottom: RULE,
+            padding: '24px 56px',
+            fontSize: 20,
+            letterSpacing: 4,
+            textTransform: 'uppercase',
+          }}
+        >
+          <div>0xshubhs.eth</div>
+          <div>blockchain engineer / security researcher</div>
+        </div>
+
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            flex: 1,
+            justifyContent: 'center',
+            padding: '0 56px',
+          }}
+        >
+          {/* Satori needs an explicit display on any node with >1 child, and it
+              has no <br> — so each line is its own flex row. */}
           <div
             style={{
-              width: 14,
-              height: 14,
-              borderRadius: 999,
-              background: '#FD9745',
+              display: 'flex',
+              flexDirection: 'column',
+              fontSize: 132,
+              fontWeight: 700,
+              lineHeight: 0.88,
+              letterSpacing: -6,
+              textTransform: 'uppercase',
             }}
-          />
-          <div style={{ fontSize: 30, color: '#FD9745', letterSpacing: 2 }}>
-            0xshubhs.com
+          >
+            <div style={{ display: 'flex' }}>Shubham</div>
+            <div style={{ display: 'flex' }}>Tiwari</div>
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              marginTop: 32,
+              fontSize: 24,
+              color: '#565656',
+              maxWidth: 820,
+            }}
+          >
+            FHE &amp; ZK privacy engineering, custom EVM chains, smart-contract security.
           </div>
         </div>
-        <div
-          style={{
-            marginTop: 28,
-            fontSize: 76,
-            fontWeight: 700,
-            lineHeight: 1.05,
-          }}
-        >
-          Shubham Tiwari
-        </div>
-        <div style={{ marginTop: 18, fontSize: 38, color: '#d1d5db' }}>
-          Blockchain Engineer &amp; Security Researcher
-        </div>
-        <div
-          style={{
-            marginTop: 44,
-            display: 'flex',
-            gap: 14,
-            fontSize: 26,
-            color: '#e5e7eb',
-          }}
-        >
-          {['FHE', 'ZK', 'EVM Chains', 'Audits', 'DeFi'].map((tag) => (
+
+        <div style={{ display: 'flex', borderTop: RULE }}>
+          {[
+            ['148', 'merged oss prs'],
+            ['700+', 'commits'],
+            ['6', 'hackathon wins'],
+            ['22', 'languages shipped'],
+          ].map(([value, label], i) => (
             <div
-              key={tag}
+              key={label}
               style={{
-                padding: '10px 26px',
-                borderRadius: 999,
-                border: '1px solid rgba(253,151,69,0.45)',
-                background: 'rgba(253,151,69,0.10)',
+                display: 'flex',
+                flexDirection: 'column',
+                flex: 1,
+                padding: '24px 32px',
+                borderLeft: i === 0 ? 'none' : RULE,
               }}
             >
-              {tag}
+              <div style={{ fontSize: 46, fontWeight: 700 }}>{value}</div>
+              <div
+                style={{
+                  marginTop: 8,
+                  fontSize: 15,
+                  letterSpacing: 3,
+                  textTransform: 'uppercase',
+                  color: '#565656',
+                }}
+              >
+                {label}
+              </div>
             </div>
           ))}
-        </div>
-        <div style={{ marginTop: 44, fontSize: 26, color: '#9ca3af' }}>
-          Lead engineer on a production RWA exchange · 148 merged OSS PRs · 6 hackathon wins
         </div>
       </div>
     ),
