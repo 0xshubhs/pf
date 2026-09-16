@@ -17,18 +17,30 @@ export default function Contact() {
         Open to work, collaborations, audits, or a friendly hello. Email is fastest.
       </PageHeader>
 
-      {/* Meme leads the page — no frame, no rules. Two bold captions sit side
-          by side over the image, exactly as they did before. */}
-      <div className="mx-auto flex h-[300px] select-none flex-col sm:h-[400px]">
-        <div className="flex justify-around text-center">
-          <p className="b-dim mx-2 mt-3 w-[120px] text-[11px] font-bold sm:mx-4 sm:mt-5 sm:w-[160px] sm:text-base">
+      {/* Meme leads the page — no frame, no rules.
+          The two Spider-Men sit at 27.6% and 71.5% across the artwork (measured
+          from meme.png, which is 577x433), NOT at the 25%/75% that a plain
+          justify-around would give. Each caption is therefore pinned to its own
+          figure's centre. The image box uses the artwork's aspect ratio so it
+          fills the box edge-to-edge — with a fixed square-ish height it was
+          letterboxed, and those percentages would have pointed at empty space. */}
+      <div className="mx-auto w-full max-w-[280px] select-none sm:max-w-[400px] md:max-w-[450px]">
+        <div className="relative h-[40px] sm:h-[54px]">
+          <p
+            className="b-dim absolute top-0 w-[124px] -translate-x-1/2 text-center text-[11px] font-bold leading-snug sm:w-[190px] sm:text-base"
+            style={{ left: '27.6%' }}
+          >
             You looking for a gud developer
           </p>
-          <p className="b-dim mx-2 mt-3 w-[120px] text-[11px] font-bold sm:mx-4 sm:mt-5 sm:w-[160px] sm:text-base">
+          <p
+            className="b-dim absolute top-0 w-[124px] -translate-x-1/2 text-center text-[11px] font-bold leading-snug sm:w-[190px] sm:text-base"
+            style={{ left: '71.5%' }}
+          >
             Me looking for a gud job
           </p>
         </div>
-        <div className="relative m-auto h-[200px] w-full max-w-[280px] sm:h-[350px] sm:max-w-[400px] md:h-[450px] md:max-w-[450px]">
+
+        <div className="relative mt-2 aspect-[577/433] w-full sm:mt-3">
           <Image
             src={meme}
             alt="spiderman-meme"

@@ -53,6 +53,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/*
+          The theme must follow the OS on every load, not just the first visit.
+          next-themes persists whatever you last picked and replays it, so the
+          stored value is dropped here — in <head>, before next-themes' own
+          blocking script reads it. Clearing it later (in an effect) would mean
+          painting the stale theme first and visibly snapping to the system one.
+          Toggling still works; it just doesn't outlive the page.
+        */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{localStorage.removeItem('theme')}catch(e){}`,
+          }}
+        />
+      </head>
       <body className={`${mono.variable} font-mono antialiased`}>
         <ClientShell>{children}</ClientShell>
       </body>

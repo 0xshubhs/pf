@@ -8,7 +8,12 @@ import Links from '@/components/links'
 
 export default function ClientShell({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider attribute="class" disableTransitionOnChange>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+    >
       <Nav />
       <div className="min-h-screen">{children}</div>
       <Links />
